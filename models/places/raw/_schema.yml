@@ -1,0 +1,5 @@
+version: 2
+
+models:
+- name: raw_place
+  description: Overture Maps places テーマのうち住所の国コードが JP の POI。pipelines/places.py が最新リリースから取り出した列に、地図表示用の geometry を足してある。
