@@ -3,8 +3,16 @@
 select
     id,
     names.primary as name,
-    names.common['ja'] as name_ja,
-    names.common['en'] as name_en,
+    -- 言語別の名前は names.rules の variant = 'language' に入る。names.common は
+    -- 2026-09 のリリースでは日本の全行で NULL だが、スキーマ上は残っているので後ろで拾う
+    coalesce(
+        list_filter(names.rules, r -> r.variant = 'language' and r.language = 'ja')[1].value,
+        names.common['ja']
+    ) as name_ja,
+    coalesce(
+        list_filter(names.rules, r -> r.variant = 'language' and r.language = 'en')[1].value,
+        names.common['en']
+    ) as name_en,
     basic_category,
     taxonomy.primary as taxonomy_primary,
     array_to_string(taxonomy.hierarchy, ' > ') as taxonomy_hierarchy,

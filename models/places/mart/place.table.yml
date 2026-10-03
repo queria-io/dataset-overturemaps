@@ -20,10 +20,10 @@ fields:
   description: 提供元が登録した主たる名称。日本語とは限らない
 - name: name_ja
   title: 名称（日本語）
-  description: 言語別の名称のうち ja。無ければ NULL
+  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち ja。無ければ NULL
 - name: name_en
   title: 名称（英語）
-  description: 言語別の名称のうち en。無ければ NULL
+  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち en。無ければ NULL
 - name: basic_category
   title: 基本カテゴリ
   description: Overture が付ける大まかなカテゴリ（restaurant / cafe / convenience_store / hospital など）
