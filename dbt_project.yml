@@ -1,0 +1,25 @@
+name: "overturemaps"
+version: "1.0.0"
+
+profile: "overturemaps"
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros", "shared/macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  overturemaps:
+    +database: overturemaps
+    places:
+      # 約 290 万件あるので raw だけ実体化し、mart は view にして二重に持たない
+      raw:
+        +materialized: table
+      mart:
+        +materialized: view

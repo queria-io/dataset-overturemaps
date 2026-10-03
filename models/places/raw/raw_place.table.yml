@@ -1,0 +1,12 @@
+schema: places
+name: raw_place
+title: 日本の POI（Overture のスキーマのまま）
+description: places.place と同じ施設を、Overture Maps places テーマのスキーマのまま全列で持つ。place に無い名前の言語別・別名（names.rules）、副カテゴリ（taxonomy.alternates）、SNS とメールアドレス、2件目以降の住所、提供元ごとの元レコード ID と更新時刻（sources）などはここにある。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/places/place/）を参照。release 列だけは Queria が足した取り込み元のリリース名。列はリリースごとの Overture のスキーマに従うので、ここでは列ごとの説明を持たない。
+keywords:
+- POI
+- 施設
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/places/place/

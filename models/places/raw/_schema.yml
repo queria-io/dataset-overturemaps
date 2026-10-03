@@ -1,0 +1,5 @@
+version: 2
+
+models:
+- name: raw_place
+  description: Overture Maps places テーマのうち住所の国コードが JP の POI。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。

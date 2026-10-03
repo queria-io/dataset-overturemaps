@@ -1,0 +1,50 @@
+version: 2
+
+models:
+- name: place
+  description: Overture Maps places テーマの日本の POI。1行が1施設。
+  access: public
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique
+  - name: name
+  - name: name_ja
+  - name: name_en
+  - name: basic_category
+  - name: taxonomy_primary
+  - name: taxonomy_hierarchy
+  - name: confidence
+  - name: operating_status
+  - name: brand_name
+  - name: brand_wikidata
+  - name: address
+  - name: locality
+  - name: region
+  - name: postcode
+  - name: phones
+  - name: websites
+  - name: source_datasets
+    data_tests:
+    - not_null
+  - name: source_licenses
+    data_tests:
+    - not_null
+    - accepted_values:
+        arguments:
+          values:
+          - CDLA-Permissive-2.0
+          - Apache-2.0, CDLA-Permissive-2.0
+          - CC0-1.0, CDLA-Permissive-2.0
+          - Apache-2.0, CC0-1.0, CDLA-Permissive-2.0
+  - name: lat
+    data_tests:
+    - not_null
+  - name: lon
+    data_tests:
+    - not_null
+  - name: geometry
+  - name: release
+    data_tests:
+    - not_null

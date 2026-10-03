@@ -1,0 +1,68 @@
+spec_version: "0.1"
+name: overturemaps
+title: Overture Maps
+description: |-
+  Overture Maps Foundation が公開するオープンな地図データのうち、places テーマの日本の POI（店舗・飲食店・医療機関・宿泊施設・公園など約290万件）。
+  名称・カテゴリ・住所・電話番号・Web サイト・ブランド・緯度経度と、レコードごとの提供元とライセンスを持つ。毎月、Overture の最新リリースから取り直す。
+
+  出典: Overture Maps Foundation, overturemaps.org（https://docs.overturemaps.org/attribution/）。
+  Queria が places テーマから住所の国コードが JP のレコードを取り出して作成した。places.raw_place は Overture のスキーマのまま全列を持ち、places.place は主な列を平坦化したもの。
+
+  提供元ごとにライセンスが違う。各レコードの source_licenses 列が、そのレコードに適用されるライセンスを示す。
+  Meta・Microsoft・PinMeTo・DAC など由来のデータは CDLA-Permissive-2.0、AllThePlaces 由来は CC0-1.0、Foursquare 由来は Apache-2.0。
+  Foursquare 由来のデータには次の NOTICE が適用される（https://opensource.foursquare.com/places-notice-txt/）。
+
+  © 2026 Foursquare Labs, Inc. All rights reserved.
+  The Foursquare OS Places dataset (the "Data") is licensed under the Apache License, Version 2.0 (the "License"). You may not use, modify, or distribute the Data except in compliance with the License.
+  As set forth more fully in the License, if you use, modify, or distribute the Data, you must: provide recipients with a copy of the License; if applicable, include prominent notices to the extent you've changed the Data; preserve attribution to Foursquare, including preserving the full content of this NOTICE.txt file.
+  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless required by applicable law or agreed to in writing, the Data distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+  Queria による変更の通知: Overture Maps Foundation が Overture のスキーマへ変換した Foursquare 由来データについて、Queria は日本のレコードの抽出と、places.place での列の選択と平坦化を行った。
+keywords:
+  - POI
+  - 施設
+  - 店舗
+  - 飲食店
+  - 地図
+  - GIS
+  - Overture Maps
+  - Foursquare
+homepage: https://github.com/queria-io/dataset-overturemaps
+language: ja
+
+licenses:
+  - id: CDLA-Permissive-2.0
+    spdx: CDLA-Permissive-2.0
+    url: https://cdla.dev/permissive-2-0/
+    title: Community Data License Agreement – Permissive, Version 2.0
+    commercial_use: true
+    share_alike: false
+    attribution_required: false
+  - id: Apache-2.0
+    spdx: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+    title: Apache License 2.0
+    commercial_use: true
+    share_alike: false
+    attribution_required: true
+  - CC0-1.0
+
+sources:
+  - title: Overture Maps places
+    path: https://docs.overturemaps.org/guides/places/
+
+contributors:
+  - title: Overture Maps Foundation
+    path: https://overturemaps.org/
+    roles: [rightsHolder]
+  - title: Foursquare Labs, Inc.
+    path: https://opensource.foursquare.com/os-places/
+    roles: [rightsHolder]
+
+spatial_coverage: [JP]
+update_frequency: monthly
+cover: 📍
+
+schemas:
+  - name: places
+    title: 場所（POI）
