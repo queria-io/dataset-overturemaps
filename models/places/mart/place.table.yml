@@ -52,6 +52,7 @@ fields:
   title: 都道府県
 - name: postcode
   title: 郵便番号
+  semantic: { role: entity, name: postal_code }
 - name: phones
   title: 電話番号
   description: 複数ある場合は半角スペース区切り
