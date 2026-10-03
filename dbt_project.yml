@@ -18,8 +18,9 @@ models:
   overturemaps:
     +database: overturemaps
     places:
-      # 約 290 万件あるので raw だけ実体化し、mart は view にして二重に持たない
       raw:
         +materialized: table
+      # mart も実体化する。view だと st_x / st_y が読むたびに評価され、spatial 拡張を
+      # 読み込んでいないブラウザの DuckDB からは統計も SQL も通らない
       mart:
-        +materialized: view
+        +materialized: table
