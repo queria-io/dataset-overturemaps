@@ -7,16 +7,14 @@ Overture は月1回ほどリリースを出し、古いリリースは数か月�
 DuckDB が行グループの統計で読み飛ばすので、全世界のファイルを落とさずに済む。
 bbox には韓国・ロシア極東・中国の一部が入るので、住所の国コードで日本に絞る。
 
-出力: data/places/place.parquet（1行 = 1 POI）と data/places/release.json
+出力: data/places/place.parquet（1行 = 1 POI）
 
 データソース: Overture Maps Foundation
 https://docs.overturemaps.org/guides/places/
 """
 
-import json
 import logging
 import re
-from datetime import UTC, datetime
 from pathlib import Path
 from urllib.request import Request, urlopen
 from xml.etree import ElementTree
@@ -53,7 +51,8 @@ def latest_release() -> str:
     ]
     if not releases:
         raise RuntimeError(f"no release found in {LIST_URL}")
-    return max(releases)
+    # .N は文字列で比べると .10 が .9 より前に来るので、数として比べる
+    return max(releases, key=lambda name: (name.split(".")[0], int(name.split(".")[1])))
 
 
 def extract_places(release: str, output: Path) -> int:
@@ -115,14 +114,3 @@ def download_places() -> None:
     if rows == 0:
         raise RuntimeError(f"release {release} has no place in Japan")
 
-    (OUTPUT_DIR / "release.json").write_text(
-        json.dumps(
-            {
-                "release": release,
-                "rows": rows,
-                "fetched_at": datetime.now(UTC).isoformat(timespec="seconds"),
-            },
-            ensure_ascii=False,
-        )
-        + "\n"
-    )
