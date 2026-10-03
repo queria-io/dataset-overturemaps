@@ -29,7 +29,12 @@ Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/p
 
 | テーブル | 内容 | 行数 |
 | --- | --- | ---: |
-| `places.place` | 日本の POI。1行が1施設 | 2,914,402 |
+| `places.place` | 日本の POI。1行が1施設。主な列を平坦化してある | 2,914,402 |
+| `places.raw_place` | 同じ行を Overture のスキーマのまま全列で持つ | 2,914,402 |
+
+`place` に無い情報（名前の言語別・別名、副カテゴリ、SNS・メールアドレス、2件目以降の住所、
+提供元ごとの元レコード ID と更新時刻など）は `raw_place` にあります。列の意味は
+[Overture のスキーマ](https://docs.overturemaps.org/schema/reference/places/place/)を見てください。
 
 行数はリリース 2026-09-23.1 の実測です。
 

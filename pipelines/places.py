@@ -6,6 +6,7 @@ Overture は月1回ほどリリースを出し、古いリリースは数か月�
 配布元は匿名で読める S3（us-west-2）の GeoParquet。bbox の列で絞ると
 DuckDB が行グループの統計で読み飛ばすので、全世界のファイルを落とさずに済む。
 bbox には韓国・ロシア極東・中国の一部が入るので、住所の国コードで日本に絞る。
+列は Overture のスキーマのまま全部残し、平坦化は dbt のマートで行う。
 
 出力: data/places/place.parquet（1行 = 1 POI）
 
@@ -68,32 +69,7 @@ def extract_places(release: str, output: Path) -> int:
     con.execute(
         f"""
         COPY (
-            SELECT
-                id,
-                names.primary AS name,
-                names.common['ja'] AS name_ja,
-                names.common['en'] AS name_en,
-                basic_category,
-                taxonomy.primary AS taxonomy_primary,
-                array_to_string(taxonomy.hierarchy, ' > ') AS taxonomy_hierarchy,
-                confidence,
-                operating_status,
-                brand.names.primary AS brand_name,
-                brand.wikidata AS brand_wikidata,
-                addresses[1].freeform AS address,
-                addresses[1].locality AS locality,
-                addresses[1].region AS region,
-                addresses[1].postcode AS postcode,
-                array_to_string(phones, ' ') AS phones,
-                array_to_string(websites, ' ') AS websites,
-                array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.dataset))), ', ')
-                    AS source_datasets,
-                array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.license))), ', ')
-                    AS source_licenses,
-                ST_Y(geometry) AS lat,
-                ST_X(geometry) AS lon,
-                version,
-                '{release}' AS release
+            SELECT *, '{release}' AS release
             FROM read_parquet('{source}', hive_partitioning = false)
             WHERE bbox.xmin BETWEEN {JAPAN_BBOX['xmin']} AND {JAPAN_BBOX['xmax']}
               AND bbox.ymin BETWEEN {JAPAN_BBOX['ymin']} AND {JAPAN_BBOX['ymax']}
