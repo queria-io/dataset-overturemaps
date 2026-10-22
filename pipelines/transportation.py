@@ -24,6 +24,8 @@ https://docs.overturemaps.org/guides/transportation/
 import logging
 from pathlib import Path
 
+import duckdb
+
 from pipelines.places import BUCKET, JAPAN_BBOX, connect_overture
 
 logger = logging.getLogger("pipelines")
@@ -41,18 +43,26 @@ def bbox_filter(column: str = "bbox") -> str:
     """
 
 
-def extract_transportation(release: str, output_dir: Path) -> tuple[int, int]:
-    base = f"s3://{BUCKET}/release/{release}"
-    con = connect_overture()
+def create_japan(con: duckdb.DuckDBPyConnection, division_area: str) -> None:
+    """日本の国の範囲を JAPAN_MARGIN_DEG だけ膨らませたポリゴンを japan テーブルに作る。
 
+    division_area は divisions テーマの division_area を読む read_parquet のパス。
+    """
     con.execute(
         f"""
         CREATE TABLE japan AS
         SELECT st_buffer(st_union_agg(geometry), {JAPAN_MARGIN_DEG}) AS geometry
-        FROM read_parquet('{base}/theme=divisions/type=division_area/*.parquet', hive_partitioning = false)
+        FROM read_parquet('{division_area}', hive_partitioning = false)
         WHERE country = 'JP' AND subtype = 'country'
         """
     )
+
+
+def extract_transportation(release: str, output_dir: Path) -> tuple[int, int]:
+    base = f"s3://{BUCKET}/release/{release}"
+    con = connect_overture()
+
+    create_japan(con, f"{base}/theme=divisions/type=division_area/*.parquet")
 
     segment = output_dir / "segment.parquet"
     con.execute(

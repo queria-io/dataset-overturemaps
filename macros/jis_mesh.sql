@@ -10,3 +10,12 @@
         + floor((({{ lat }}) * 1.5 - floor(({{ lat }}) * 1.5)) * 8)::integer * 10
         + floor((({{ lon }}) - floor({{ lon }})) * 8)::integer)
 {%- endmacro %}
+
+{# 3 次メッシュ（基準地域メッシュ、約 1km 四方）は 2 次メッシュを縦横 10 等分したもの。
+   緯度 × 12 が 2 次メッシュの行の通し番号になる（1.5 × 8）。 #}
+
+{% macro jis_mesh3(lon, lat) -%}
+    ({{ jis_mesh2(lon, lat) }} * 100
+        + floor((({{ lat }}) * 12 - floor(({{ lat }}) * 12)) * 10)::integer * 10
+        + floor((({{ lon }}) * 8 - floor(({{ lon }}) * 8)) * 10)::integer)
+{%- endmacro %}

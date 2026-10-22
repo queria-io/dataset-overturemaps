@@ -1,7 +1,7 @@
 # dataset-overturemaps
 
 [Overture Maps Foundation](https://overturemaps.org/) が公開するオープンな地図データのうち、
-places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画を Queria のカタログ
+places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物を Queria のカタログ
 （[data.queria.io](https://data.queria.io/)）へ取り込むデータセットです。
 
 ## データ出典
@@ -24,7 +24,8 @@ places テーマのうち、住所の国コードが JP のレコードだけを
 transportation テーマと divisions テーマは OpenStreetMap 由来で、[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)
 が適用されます（© OpenStreetMap contributors）。divisions の一部の区画は geoBoundaries と Esri Community Maps
 contributors（どちらも CC BY 4.0）に由来します。このデータセットの `transportation` スキーマと `divisions`
-スキーマも同じ ODbL で提供します。
+スキーマ、buildings スキーマも同じ ODbL で提供します。buildings は OpenStreetMap、Microsoft の
+Global ML Building Footprints（ODbL）、Shi らの推定（Zenodo、CC BY 4.0）に由来します。
 
 Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/places-notice-txt/) が
 適用されます。全文と Queria による変更の通知は `dataset.yml` の説明に載せてあり、カタログの
@@ -44,12 +45,16 @@ Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/p
 | `divisions.division_area` | 同じ区画のポリゴン。地方公共団体コード付き | 27,368 |
 | `divisions.raw_division` | `division` を Overture のスキーマのまま全列で持つ | 221,245 |
 | `divisions.raw_division_area` | `division_area` を Overture のスキーマのまま全列で持つ | 27,368 |
+| `buildings.building` | 建物の外形。1行が1棟。高さ・階数とメッシュ・地方公共団体コード付き | 約 5,400 万 |
+| `buildings.building_part` | 建物の部分（高層部など）。`building_id` で `building` を指す | 約 14 万 |
+| `buildings.raw_building` | `building` を Overture のスキーマのまま全列で持つ | 約 5,400 万 |
+| `buildings.raw_building_part` | `building_part` を Overture のスキーマのまま全列で持つ | 約 14 万 |
 
 `place` に無い情報（名前の言語別・別名、副カテゴリ、SNS・メールアドレス、2件目以降の住所、
 提供元ごとの元レコード ID と更新時刻など）は `raw_place` にあります。列の意味は
 [Overture のスキーマ](https://docs.overturemaps.org/schema/reference/places/place/)を見てください。
 
-places の行数はリリース 2026-09-23.1、transportation と divisions の行数はリリース 2026-10-21.0 の実測です。
+places の行数はリリース 2026-09-23.1、transportation と divisions の行数はリリース 2026-10-21.0 の実測です。buildings の行数は同じリリースを 0.05 度の格子で数えた概数で、初回のビルドで確定します。
 
 カテゴリは Overture 独自の英語の分類で、`basic_category`（262種）、`taxonomy_primary`（1,415種）、
 `taxonomy_hierarchy`（最大6段）の3つの粒度があります。同じ業態でも施設によって付いている粒度が
@@ -101,4 +106,23 @@ POI や建物の位置を `division_area` に当てると、市区町村コー�
 select subtype, name, lg_code
 from overturemaps.divisions.division_area
 where is_land and st_contains(geometry, st_point(139.3948, 35.6795))
+```
+
+## 建物（buildings）
+
+`building` は外形の重心からメッシュコード（`mesh1` / `mesh2` / `mesh3`）と、重心が入る市区町村の地方公共団体コード
+（`divisions.division_area` から引いたもの。政令市は区）を付けています。行は 3 次メッシュ（約 1km 四方）の順に並んで
+いるので、`mesh2` や `mesh3` で絞ると必要な行グループだけを読みます。
+
+- 提供元は OpenStreetMap（約 3,000 万棟）、Microsoft ML Buildings（約 2,100 万棟）、Shi らの推定（約 310 万棟）。
+  高さや階数を持つのは OSM 由来の一部（約 420 万棟）だけで、機械学習由来の建物は外形しか持ちません
+- `building_id` は Overture の GERS ID で、リリースをまたいでも同じ建物には同じ ID が付きます
+- `area_m2` は外形の面積を楕円体の上で測ったものです
+
+```sql
+-- 3 次メッシュごとの建物数と高さの分かる建物の数（東京駅のまわり）
+select mesh3, count(*) as buildings, count(height) as with_height
+from overturemaps.buildings.building
+where mesh2 = 533946
+group by mesh3
 ```
