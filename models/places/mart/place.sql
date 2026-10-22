@@ -1,37 +1,77 @@
-{# raw_place の入れ子の列を平坦化した日本の POI。列の選び方は place.table.yml。 #}
+{# raw_place の入れ子の列を平坦化した日本の POI。列の選び方は place.table.yml。
+   位置から、メッシュコード、施設が入る市区町村の地方公共団体コード、施設が入る建物の
+   building_id を付ける。市区町村の決め方は buildings.building と同じで、政令市は区を採る。 #}
+
+-- located_* と最後の select の 3 か所から読むので、実体化させずに読む側ごとに展開させる
+with place as not materialized (
+    select
+        id,
+        names.primary as name,
+        -- 言語別の名前は names.rules の variant = 'language' に入る。names.common は
+        -- 2026-09 のリリースでは日本の全行で NULL だが、スキーマ上は残っているので後ろで拾う
+        coalesce(
+            list_filter(names.rules, r -> r.variant = 'language' and r.language = 'ja')[1].value,
+            names.common['ja']
+        ) as name_ja,
+        coalesce(
+            list_filter(names.rules, r -> r.variant = 'language' and r.language = 'en')[1].value,
+            names.common['en']
+        ) as name_en,
+        basic_category,
+        taxonomy.primary as taxonomy_primary,
+        array_to_string(taxonomy.hierarchy, ' > ') as taxonomy_hierarchy,
+        confidence,
+        operating_status,
+        brand.names.primary as brand_name,
+        brand.wikidata as brand_wikidata,
+        addresses[1].freeform as address,
+        addresses[1].locality as locality,
+        addresses[1].region as region,
+        addresses[1].postcode as postcode,
+        array_to_string(phones, ' ') as phones,
+        array_to_string(websites, ' ') as websites,
+        array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.dataset))), ', ')
+            as source_datasets,
+        array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.license))), ', ')
+            as source_licenses,
+        st_y(geometry) as lat,
+        st_x(geometry) as lon,
+        geometry,
+        release
+    from {{ ref('raw_place') }}
+),
+
+municipality as (
+    select lg_code, subtype = 'macrohood' as is_ward, geometry
+    from {{ ref('division_area') }}
+    where is_municipality and is_land
+),
+
+located_municipality as (
+    select place.id, arg_max(municipality.lg_code, municipality.is_ward) as lg_code
+    from place
+    join municipality on st_contains(municipality.geometry, place.geometry)
+    group by place.id
+),
+
+located_building as (
+    -- 外形が重なる建物に入るときは、小さい方（内側の建物）を採る
+    select place.id, arg_min(building.building_id, building.area_m2) as building_id
+    from place
+    join {{ ref('building') }} as building on st_contains(building.geometry, place.geometry)
+    group by place.id
+)
 
 select
-    id,
-    names.primary as name,
-    -- 言語別の名前は names.rules の variant = 'language' に入る。names.common は
-    -- 2026-09 のリリースでは日本の全行で NULL だが、スキーマ上は残っているので後ろで拾う
-    coalesce(
-        list_filter(names.rules, r -> r.variant = 'language' and r.language = 'ja')[1].value,
-        names.common['ja']
-    ) as name_ja,
-    coalesce(
-        list_filter(names.rules, r -> r.variant = 'language' and r.language = 'en')[1].value,
-        names.common['en']
-    ) as name_en,
-    basic_category,
-    taxonomy.primary as taxonomy_primary,
-    array_to_string(taxonomy.hierarchy, ' > ') as taxonomy_hierarchy,
-    confidence,
-    operating_status,
-    brand.names.primary as brand_name,
-    brand.wikidata as brand_wikidata,
-    addresses[1].freeform as address,
-    addresses[1].locality as locality,
-    addresses[1].region as region,
-    addresses[1].postcode as postcode,
-    array_to_string(phones, ' ') as phones,
-    array_to_string(websites, ' ') as websites,
-    array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.dataset))), ', ')
-        as source_datasets,
-    array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.license))), ', ')
-        as source_licenses,
-    st_y(geometry) as lat,
-    st_x(geometry) as lon,
-    geometry,
-    release
-from {{ ref('raw_place') }}
+    place.* exclude (geometry, release),
+    left(located_municipality.lg_code, 2) as pref_code,
+    located_municipality.lg_code,
+    located_building.building_id,
+    {{ jis_mesh1('place.lon', 'place.lat') }} as mesh1,
+    {{ jis_mesh2('place.lon', 'place.lat') }} as mesh2,
+    {{ jis_mesh3('place.lon', 'place.lat') }} as mesh3,
+    place.geometry,
+    place.release
+from place
+left join located_municipality using (id)
+left join located_building using (id)
