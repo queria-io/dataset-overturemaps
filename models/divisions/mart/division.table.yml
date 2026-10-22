@@ -1,0 +1,74 @@
+schema: divisions
+name: division
+title: 日本の行政区画
+description: Overture Maps divisions テーマの日本の区画に、総務省の地方公共団体コードを付けたもの。1行が1区画で、国・都道府県・市区町村・政令市の区・町丁・字を含む。Overture の区画はコードを持たないので、都道府県名と市区町村名を Queria の lg_code（全国地方公共団体コード）と照合して付けた。市区町村そのものの行は is_municipality が true になる。町丁・字の行には、その区画が属する市区町村（政令市なら区）のコードが入るので、POI や建物の位置をこの区画に当てれば、市区町村コードを持つ他のデータセットと結合できる。division_id は Overture の GERS ID で、リリースをまたいでも同じ区画には同じ ID が付く。ポリゴンは divisions.division_area にある。
+keywords:
+- 行政区画
+- 市区町村
+- 都道府県
+- 町丁
+- 地方公共団体コード
+- GERS
+- GIS
+published: true
+sources:
+- path: https://docs.overturemaps.org/guides/divisions/
+fields:
+- name: division_id
+  title: GERS ID
+  description: Overture が区画に振る ID。divisions.division_area の division_id と、子の区画の parent_division_id がこれを指す
+- name: subtype
+  title: 区画の種類
+  description: country（国）/ region（都道府県）/ county / locality / macrohood / neighborhood / microhood。日本では county が geoBoundaries 由来のローマ字名の市区町村、locality が OSM 由来の市町村・東京の特別区（郡や大字・字も混ざる）、macrohood が政令市の区、neighborhood と microhood が町丁・字
+- name: class
+  title: 区画の分類
+  description: locality の city / town / village / hamlet など。それ以外はほぼ NULL
+- name: name
+  title: 名称
+  description: Overture の主たる名称。日本では OSM 由来の区画は漢字、geoBoundaries 由来の county はローマ字
+- name: name_en
+  title: 名称（英語）
+  description: Overture が言語別に持つ名称のうち en。無ければ NULL
+- name: prefecture
+  title: 都道府県名
+  description: 階層をさかのぼった都道府県（subtype = region）の名称
+- name: pref_code
+  title: 都道府県コード
+  description: 2桁。prefecture を地方公共団体コードの一覧と照合したもの
+  semantic: { role: entity, name: prefecture }
+- name: lg_code
+  title: 地方公共団体コード
+  description: 6桁（検査数字つき）。is_municipality が true の行はその市区町村のコード、町丁・字の行は階層をさかのぼって最初に見つかった市区町村（政令市なら区）のコード。都道府県・国と、照合できなかった区画は NULL。5桁のコードと結合するときは先頭 5 桁を使う
+  semantic: { role: entity, name: city }
+- name: is_municipality
+  title: 市区町村そのものか
+  description: この行が lg_code の市区町村（政令市の区を含む）そのものなら true。1 つのコードに true の行は 1 行だけで、同じ市区町村が点だけの行とポリゴンを持つ行の 2 行で載っているときはポリゴンを持つ方。政令市は市の行と区の行の両方が true になる
+- name: parent_division_id
+  title: 親の GERS ID
+  description: 1つ上の区画の division_id
+- name: hierarchy_names
+  title: 階層
+  description: 都道府県から自分までの区画の名称を「 > 」で区切ったもの（国は省く）
+- name: population
+  title: 人口
+  description: Overture が持つ人口。OSM の population タグ由来で、時点は区画ごとに違う。多くの行で NULL
+- name: wikidata
+  title: Wikidata ID
+- name: lon
+  title: 経度
+- name: lat
+  title: 緯度
+- name: mesh1
+  title: 1 次メッシュコード
+  description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+  semantic: { role: entity, name: mesh }
+- name: mesh2
+  title: 2 次メッシュコード
+  description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。行はこの順に並んでいる
+  semantic: { role: entity, name: mesh }
+- name: geometry
+  title: ジオメトリ
+  description: 区画の代表点を表す POINT
+- name: release
+  title: リリース
+  description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
