@@ -18,9 +18,10 @@ with division as (
         subtype,
         class,
         names.primary as name,
+        -- rules の variant は official / alternate / short で、言語は language に入る
         coalesce(
-            list_filter(names.rules, r -> r.variant = 'language' and r.language = 'en')[1].value,
-            names.common['en']
+            names.common['en'],
+            list_filter(names.rules, r -> r.language = 'en')[1].value
         ) as name_en,
         parent_division_id,
         -- 日本の区画は階層が 1 本だけ。先頭が国、末尾が自分自身
@@ -64,6 +65,19 @@ municipality as (
     qualify count(*) over (partition by candidate.division_id) = 1
 ),
 
+representative as (
+    -- 同じ市区町村が点だけの区画とポリゴンを持つ区画の 2 行で載っていることがある（利尻町など）。
+    -- is_municipality はポリゴンのある方の 1 行だけに付け、GERS ID と市区町村コードを 1 対 1 にする。
+    -- 下の町丁へのコードの引き継ぎは、どちらの行の下にあっても効くよう municipality を使う
+    select municipality.division_id
+    from municipality
+    left join (select distinct division_id from {{ ref('raw_division_area') }}) as area using (division_id)
+    qualify row_number() over (
+        partition by municipality.lg_code
+        order by area.division_id is not null desc, municipality.division_id
+    ) = 1
+),
+
 ancestor as (
     select division_id, unnest(hierarchy).division_id as ancestor_id, generate_subscripts(hierarchy, 1) as depth
     from division
@@ -85,7 +99,7 @@ select
     division.prefecture,
     prefecture.pref_code,
     nearest.lg_code,
-    municipality.division_id is not null as is_municipality,
+    representative.division_id is not null as is_municipality,
     division.parent_division_id,
     array_to_string(list_transform(division.hierarchy[2:], h -> h.name), ' > ') as hierarchy_names,
     division.population,
@@ -100,5 +114,5 @@ from division
 left join lg_code as prefecture
     on prefecture.code_type = 'prefecture' and prefecture.prefecture = division.prefecture
 left join nearest using (division_id)
-left join municipality using (division_id)
+left join representative using (division_id)
 order by mesh2, division.division_id

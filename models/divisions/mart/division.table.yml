@@ -42,7 +42,7 @@ fields:
   semantic: { role: entity, name: city }
 - name: is_municipality
   title: 市区町村そのものか
-  description: この行が lg_code の市区町村（政令市の区を含む）そのものなら true。政令市は市の行と区の行の両方が true になる
+  description: この行が lg_code の市区町村（政令市の区を含む）そのものなら true。1 つのコードに true の行は 1 行だけで、同じ市区町村が点だけの行とポリゴンを持つ行の 2 行で載っているときはポリゴンを持つ方。政令市は市の行と区の行の両方が true になる
 - name: parent_division_id
   title: 親の GERS ID
   description: 1つ上の区画の division_id
