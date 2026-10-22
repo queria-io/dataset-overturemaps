@@ -24,3 +24,8 @@ models:
       # 読み込んでいないブラウザの DuckDB からは統計も SQL も通らない
       mart:
         +materialized: table
+    transportation:
+      raw:
+        +materialized: table
+      mart:
+        +materialized: table

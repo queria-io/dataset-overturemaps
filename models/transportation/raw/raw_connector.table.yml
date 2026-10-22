@@ -1,0 +1,12 @@
+schema: transportation
+name: raw_connector
+title: 日本の道路の接続点（Overture のスキーマのまま）
+description: Overture Maps transportation テーマの connector のうち、transportation.raw_segment の道路が参照しているもの。道路区間どうしがつながる点で、交差点と道の端にあたる。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/transportation/connector/）を参照。
+keywords:
+- 道路
+- 交差点
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/transportation/connector/

@@ -1,8 +1,8 @@
 # dataset-overturemaps
 
 [Overture Maps Foundation](https://overturemaps.org/) が公開するオープンな地図データのうち、
-places テーマの日本の POI を Queria のカタログ（[data.queria.io](https://data.queria.io/)）へ
-取り込むデータセットです。
+places テーマの日本の POI と、transportation テーマの日本の道路網を Queria のカタログ
+（[data.queria.io](https://data.queria.io/)）へ取り込むデータセットです。
 
 ## データ出典
 
@@ -21,6 +21,10 @@ places テーマのうち、住所の国コードが JP のレコードだけを
 | AllThePlaces | CC0-1.0 | 約 37 万 |
 | Foursquare | Apache-2.0 | 約 33 万 |
 
+transportation テーマは OpenStreetMap 由来で、[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)
+が適用されます（© OpenStreetMap contributors）。このデータセットの `transportation` スキーマも同じ ODbL で
+提供します。
+
 Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/places-notice-txt/) が
 適用されます。全文と Queria による変更の通知は `dataset.yml` の説明に載せてあり、カタログの
 データセットページに表示されます。
@@ -31,15 +35,40 @@ Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/p
 | --- | --- | ---: |
 | `places.place` | 日本の POI。1行が1施設。主な列を平坦化してある | 2,914,402 |
 | `places.raw_place` | 同じ行を Overture のスキーマのまま全列で持つ | 2,914,402 |
+| `transportation.road_edge` | 道路網の辺。道路を交差点ごとに区切った1本が1行 | 18,610,451 |
+| `transportation.road_node` | 道路網の節点（交差点と道の端） | 13,333,294 |
+| `transportation.raw_segment` | 道路区間を Overture のスキーマのまま全列で持つ | 13,067,844 |
+| `transportation.raw_connector` | `raw_segment` が参照する接続点を Overture のスキーマのまま | 13,333,294 |
 
 `place` に無い情報（名前の言語別・別名、副カテゴリ、SNS・メールアドレス、2件目以降の住所、
 提供元ごとの元レコード ID と更新時刻など）は `raw_place` にあります。列の意味は
 [Overture のスキーマ](https://docs.overturemaps.org/schema/reference/places/place/)を見てください。
 
-行数はリリース 2026-09-23.1 の実測です。
+places の行数はリリース 2026-09-23.1、transportation の行数はリリース 2026-10-21.0 の実測です。
 
 カテゴリは Overture 独自の英語の分類で、`basic_category`（262種）、`taxonomy_primary`（1,415種）、
 `taxonomy_hierarchy`（最大6段）の3つの粒度があります。同じ業態でも施設によって付いている粒度が
 違うので、細かいカテゴリで数えると取りこぼします。
 
 `operating_status`（営業状態）はほとんどのレコードで空です。閉店した施設を除く用途には使えません。
+
+## 道路網（transportation）
+
+`road_edge` と `road_node` は、経路や到達圏（徒歩 10 分圏など）をそのまま計算できる形にしたものです。
+
+- Overture の区間は交差点をまたいで続くので、他の道とつながる点（connector）ごとに区切り直しています。
+  `from_node` / `to_node` が `road_node.node_id` を指します
+- 徒歩・自転車・車で通れるか（`walk` / `bike` / `car_forward` / `car_backward`）は道路の種類で決め、
+  Overture の `access_restrictions` のうち区間全体に効く条件なしの規則で上書きしています。時間帯や車種の
+  条件付きの規制と、区間の一部だけに効く規制は反映していません。一方通行は車にだけ効かせています
+- 行は JIS X 0410 の 2 次メッシュ（約 10km 四方）の順に並んでいます。`mesh2` で絞ると、DuckDB は
+  そのメッシュを含む行グループだけを読みます（2026-10-21.0 では 1 メッシュあたり 152 のうち 2 つ）
+- `node_id` と `edge_id` は Overture のリリースごとに振り直します。リリースをまたいで同じ道を追うときは
+  `gers_id` を使ってください
+
+```sql
+-- 東京駅のまわり（2 次メッシュ 533946）で、徒歩で通れる道
+select edge_id, from_node, to_node, length_m
+from overturemaps.transportation.road_edge
+where mesh2 = 533946 and walk
+```
