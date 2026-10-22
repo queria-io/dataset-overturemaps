@@ -1,0 +1,49 @@
+version: 2
+
+models:
+- name: division
+  description: Overture Maps divisions テーマの日本の区画に地方公共団体コードを付けたもの。1行が1区画。
+  access: public
+  columns:
+  - name: division_id
+    data_tests:
+    - not_null
+    - unique
+  - name: subtype
+    data_tests:
+    - not_null
+    - accepted_values:
+        arguments:
+          values: [country, region, county, locality, macrohood, neighborhood, microhood]
+  - name: pref_code
+  - name: lg_code
+  - name: is_municipality
+    data_tests:
+    - not_null
+  - name: geometry
+    data_tests:
+    - not_null
+  - name: release
+    data_tests:
+    - not_null
+- name: division_area
+  description: Overture Maps divisions テーマの日本の区画のポリゴン。1行が1ポリゴン。
+  access: public
+  columns:
+  - name: area_id
+    data_tests:
+    - not_null
+    - unique
+  - name: division_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('division')
+          field: division_id
+  - name: geometry
+    data_tests:
+    - not_null
+  - name: release
+    data_tests:
+    - not_null

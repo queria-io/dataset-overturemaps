@@ -1,0 +1,17 @@
+version: 2
+
+models:
+- name: raw_division
+  description: Overture Maps divisions テーマの division のうち country = 'JP' のもの。国・都道府県・市区町村・町丁・字の代表点と階層。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique
+- name: raw_division_area
+  description: Overture Maps divisions テーマの division_area のうち country = 'JP' のもの。raw_division の区画のポリゴン。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique

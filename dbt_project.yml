@@ -29,3 +29,8 @@ models:
         +materialized: table
       mart:
         +materialized: table
+    divisions:
+      raw:
+        +materialized: table
+      mart:
+        +materialized: table

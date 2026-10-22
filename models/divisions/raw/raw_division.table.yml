@@ -1,0 +1,12 @@
+schema: divisions
+name: raw_division
+title: 日本の行政区画（Overture のスキーマのまま）
+description: Overture Maps divisions テーマの division のうち country = 'JP' のもの。国・都道府県・市区町村・町丁・字が 1 行ずつで、代表点の POINT と上位の区画への階層（hierarchies）、人口、Wikidata ID などを持つ。divisions.division と同じ行を、Overture のスキーマのまま全列で持つ。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/divisions/division/）を参照。release 列だけは Queria が足した取り込み元のリリース名。
+keywords:
+- 行政区画
+- 市区町村
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/divisions/division/
