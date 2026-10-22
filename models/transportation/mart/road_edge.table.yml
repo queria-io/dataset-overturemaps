@@ -1,0 +1,78 @@
+schema: transportation
+name: road_edge
+title: 道路網の辺
+description: 日本の道路網を経路計算に使える形にしたもの。Overture Maps の道路区間を、他の道とつながる点ごとに区切った 1 本が 1 行で、from_node と to_node が transportation.road_node を指す。徒歩・自転車・車で通れるかと、車の一方通行を列に持つ。行は 2 次メッシュの順に並んでいるので、mesh2 で絞ると周りの道だけを読める（たとえば徒歩 15 分なら出発点のメッシュとその隣だけで足りる）。通れる手段は道路の種類から決め、Overture の access_restrictions のうち区間全体に効く条件なしの規則で上書きしている。時間帯や車種の条件付きの規制、区間の一部だけに効く規制は反映していない。一方通行は車にだけ効かせ、歩行者と自転車は両方向に通している。
+keywords:
+- 道路
+- 道路網
+- 経路
+- 到達圏
+- 商圏
+- 一方通行
+- GIS
+published: true
+sources:
+- path: https://docs.overturemaps.org/guides/transportation/
+fields:
+- name: edge_id
+  title: 辺 ID
+  description: 2 次メッシュの順に振った整数。リリースごとに振り直す
+- name: from_node
+  title: 始点の節点 ID
+  description: road_node の node_id。元の区間の線の向き（Overture の forward）の始点側
+- name: to_node
+  title: 終点の節点 ID
+  description: road_node の node_id。元の区間の線の向きの終点側
+- name: length_m
+  title: 長さ（m）
+  description: 楕円体の上で測った線の長さ
+- name: class
+  title: 道路の種類
+  description: Overture の class（motorway / trunk / primary / secondary / tertiary / residential / service / footway / steps など）。OpenStreetMap の highway タグにほぼ対応する
+- name: subclass
+  title: 道路の細分類
+  description: Overture の subclass（sidewalk / crosswalk / link / driveway など）。無ければ NULL
+- name: walk
+  title: 徒歩で通れる
+  description: 既定では motorway 以外を通れるとし、access_restrictions の規則で上書きする
+- name: bike
+  title: 自転車で通れる
+  description: 既定では motorway・footway・steps・pedestrian 以外を通れるとし、access_restrictions の規則で上書きする
+- name: car_forward
+  title: 車で from_node から to_node へ通れる
+  description: 車で通れる道で、この向きの通行が禁止されていなければ true
+- name: car_backward
+  title: 車で to_node から from_node へ通れる
+  description: 車で通れる道で、この向きの通行が禁止されていなければ true。car_forward とどちらか片方だけが true なら一方通行
+- name: speed_limit_kmh
+  title: 規制速度（km/h）
+  description: Overture の speed_limits のうち区間全体に効く条件なしの最高速度。生活道路ではほとんど NULL
+- name: is_bridge
+  title: 橋
+- name: is_tunnel
+  title: トンネル
+- name: is_link
+  title: ランプ・連絡路
+- name: mesh1
+  title: 1 次メッシュコード
+  description: 線の中点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+  semantic: { role: entity, name: mesh }
+- name: mesh2
+  title: 2 次メッシュコード
+  description: 線の中点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。メッシュをまたぐ線は中点の側に入るので、境界付近の経路を出すときは隣のメッシュも読む
+  semantic: { role: entity, name: mesh }
+- name: gers_id
+  title: 元の区間の GERS ID
+  description: 区切る前の Overture の区間の ID。transportation.raw_segment の id
+- name: from_at
+  title: 元の区間上の始点の位置
+  description: 元の区間の長さを 1 としたときの始点の位置（0〜1）
+- name: to_at
+  title: 元の区間上の終点の位置
+  description: 元の区間の長さを 1 としたときの終点の位置（0〜1）
+- name: geometry
+  title: ジオメトリ
+  description: 辺の形を表す LINESTRING
+- name: release
+  title: リリース
+  description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）

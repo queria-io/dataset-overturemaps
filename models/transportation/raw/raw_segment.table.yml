@@ -1,0 +1,13 @@
+schema: transportation
+name: raw_segment
+title: 日本の道路区間（Overture のスキーマのまま）
+description: Overture Maps transportation テーマの道路区間（subtype = road）のうち、日本の範囲に入るもの。区間は交差点をまたいで続き、途中でどこが他の道とつながるかを connectors 列（connector の ID と区間上の位置 at）で持つ。一方通行や通行止めは access_restrictions、規制速度は speed_limits、橋やトンネルは road_flags にある。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/transportation/segment/）を参照。release 列だけは Queria が足した取り込み元のリリース名。経路計算には、交差点で区切り直した transportation.road_edge を使う。
+keywords:
+- 道路
+- 道路網
+- GIS
+- Overture Maps
+- OpenStreetMap
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/transportation/segment/

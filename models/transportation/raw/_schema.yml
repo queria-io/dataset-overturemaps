@@ -1,0 +1,7 @@
+version: 2
+
+models:
+- name: raw_segment
+  description: Overture Maps transportation テーマの道路区間（subtype = road）のうち日本の範囲に入るもの。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+- name: raw_connector
+  description: Overture Maps transportation テーマの connector のうち、raw_segment の道路が参照しているもの。Overture のスキーマのまま全列を持つ。

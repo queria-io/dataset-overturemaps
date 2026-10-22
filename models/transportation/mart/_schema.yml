@@ -1,0 +1,78 @@
+version: 2
+
+models:
+- name: road_node
+  description: 道路網の節点（交差点と道の端）。1行が1節点。
+  access: public
+  columns:
+  - name: node_id
+    data_tests:
+    - not_null
+    - unique
+  - name: gers_id
+    data_tests:
+    - not_null
+    - unique
+  - name: lon
+    data_tests:
+    - not_null
+  - name: lat
+    data_tests:
+    - not_null
+  - name: mesh1
+    data_tests:
+    - not_null
+  - name: mesh2
+    data_tests:
+    - not_null
+  - name: geometry
+- name: road_edge
+  description: 道路網の辺。Overture の道路区間を交差点ごとに区切った1本が1行。
+  access: public
+  columns:
+  - name: edge_id
+    data_tests:
+    - not_null
+    - unique
+  - name: from_node
+    data_tests:
+    - not_null
+  - name: to_node
+    data_tests:
+    - not_null
+  - name: length_m
+    data_tests:
+    - not_null
+  - name: class
+  - name: subclass
+  - name: walk
+    data_tests:
+    - not_null
+  - name: bike
+    data_tests:
+    - not_null
+  - name: car_forward
+    data_tests:
+    - not_null
+  - name: car_backward
+    data_tests:
+    - not_null
+  - name: speed_limit_kmh
+  - name: is_bridge
+  - name: is_tunnel
+  - name: is_link
+  - name: mesh1
+    data_tests:
+    - not_null
+  - name: mesh2
+    data_tests:
+    - not_null
+  - name: gers_id
+    data_tests:
+    - not_null
+  - name: from_at
+  - name: to_at
+  - name: geometry
+  - name: release
+    data_tests:
+    - not_null

@@ -56,8 +56,7 @@ def latest_release() -> str:
     return max(releases, key=lambda name: (name.split(".")[0], int(name.split(".")[1])))
 
 
-def extract_places(release: str, output: Path) -> int:
-    source = f"s3://{BUCKET}/release/{release}/theme=places/type=place/*.parquet"
+def connect_overture() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect()
     for extension in ("httpfs", "spatial"):
         con.install_extension(extension)
@@ -65,6 +64,12 @@ def extract_places(release: str, output: Path) -> int:
     con.execute(f"SET s3_region = '{REGION}'")
     # 匿名で読む。認証情報を探しに行かせない
     con.execute(f"CREATE SECRET overture (TYPE s3, PROVIDER config, REGION '{REGION}')")
+    return con
+
+
+def extract_places(release: str, output: Path) -> int:
+    source = f"s3://{BUCKET}/release/{release}/theme=places/type=place/*.parquet"
+    con = connect_overture()
 
     con.execute(
         f"""
