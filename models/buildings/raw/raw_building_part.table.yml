@@ -1,0 +1,11 @@
+schema: buildings
+name: raw_building_part
+title: 日本の建物の部分（Overture のスキーマのまま）
+description: Overture Maps buildings テーマの building_part のうち日本の範囲に入るもの。buildings.building_part と同じ行を、Overture のスキーマのまま全列で持つ。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/buildings/building_part/）を参照。release 列だけは Queria が足した取り込み元のリリース名。
+keywords:
+- 建物
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/buildings/building_part/

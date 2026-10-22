@@ -19,4 +19,6 @@ jobs:
     uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
     with:
       dataset_name: overturemaps
+      # 建物（約 5,400 万棟）の取り出しとビルドが加わり、既定の 90 分では足りない見込み
+      timeout_minutes: 150
     secrets: inherit

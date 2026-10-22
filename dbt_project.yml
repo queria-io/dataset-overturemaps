@@ -34,3 +34,8 @@ models:
         +materialized: table
       mart:
         +materialized: table
+    buildings:
+      raw:
+        +materialized: table
+      mart:
+        +materialized: table

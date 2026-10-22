@@ -1,0 +1,17 @@
+version: 2
+
+models:
+- name: raw_building
+  description: Overture Maps buildings テーマの building のうち日本の範囲に入るもの。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique
+- name: raw_building_part
+  description: Overture Maps buildings テーマの building_part のうち日本の範囲に入るもの。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique

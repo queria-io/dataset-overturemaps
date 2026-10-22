@@ -1,0 +1,11 @@
+schema: buildings
+name: raw_building
+title: 日本の建物（Overture のスキーマのまま）
+description: Overture Maps buildings テーマの building のうち日本の範囲に入るもの。buildings.building と同じ建物を、Overture のスキーマのまま全列で持つ。building に無い外壁・屋根の色や素材、屋根の向き、提供元ごとの元レコード ID と更新時刻（sources）などはここにある。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/buildings/building/）を参照。release 列だけは Queria が足した取り込み元のリリース名。
+keywords:
+- 建物
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/buildings/building/
