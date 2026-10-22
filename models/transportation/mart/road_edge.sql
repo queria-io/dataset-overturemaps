@@ -1,13 +1,14 @@
 {# 道路網の辺。Overture の区間を、途中で他の道とつながる点（connector）ごとに区切った 1 本が 1 行。
    from_node から to_node へ向かう向きが、元の区間の線の向き（Overture の forward）になる。
    通れる手段は道路の種類で決め、access_restrictions の区間全体に効く規則で上書きする。
-   一方通行は車にだけ効かせる（歩行者と自転車は両方向に通す）。 #}
+   一方通行は車にだけ効かせる（歩行者と自転車は両方向に通す）。
+   connector の位置 at は WGS84 の楕円体の上で測った長さの比なので、経緯度のまま切ると
+   東西と南北で縮尺が違うぶんずれる（東京で 1km あたり最大 90m ほど）。等角な楕円体メルカトル
+   （EPSG:3395）に移して切り、経緯度に戻す。 #}
 
 {% set car_modes = "['car', 'motor_vehicle', 'vehicle']" %}
 {% set bike_modes = "['bicycle', 'vehicle']" %}
 {% set walk_modes = "['foot']" %}
-{% set yes = "['allowed', 'designated']" %}
-{% set no = "['denied']" %}
 
 with segment as (
     select
@@ -15,6 +16,7 @@ with segment as (
         class,
         subclass,
         geometry,
+        st_transform(geometry, 'EPSG:4326', 'EPSG:3395', true) as geometry_merc,
         release,
         coalesce(access_restrictions, []) as rules,
         list_distinct(flatten(list_transform(
@@ -30,24 +32,19 @@ with segment as (
 mode as (
     select
         *,
-        case
-            when {{ has_access_rule('rules', no, walk_modes) }} then false
-            when {{ has_access_rule('rules', yes, walk_modes) }} then true
-            else class <> 'motorway'
-        end as walk,
-        case
-            when {{ has_access_rule('rules', no, bike_modes) }} then false
-            when {{ has_access_rule('rules', yes, bike_modes) }} then true
-            else class not in ('motorway', 'footway', 'steps', 'pedestrian')
-        end as bike,
-        case
-            when {{ has_access_rule('rules', no, car_modes) }} then false
-            when {{ has_access_rule('rules', yes, car_modes) }} then true
-            else class in (
-                'motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified',
-                'residential', 'living_street', 'service', 'track', 'unknown'
-            )
-        end as car_any
+        -- 当てはまる規則があればその access_type（allowed / designated なら通れる）、無ければ道路の種類で決める
+        coalesce(
+            {{ access_rule('rules', walk_modes) }} <> 'denied',
+            class <> 'motorway'
+        ) as walk,
+        coalesce(
+            {{ access_rule('rules', bike_modes) }} <> 'denied',
+            class not in ('motorway', 'footway', 'steps', 'pedestrian')
+        ) as bike,
+        class in (
+            'motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified',
+            'residential', 'living_street', 'service', 'track', 'unknown'
+        ) as car_default
     from segment
 ),
 
@@ -59,7 +56,8 @@ part as (
         lead(c.connector_id) over w as to_gers,
         lead(c.at) over w as to_at
     from mode as m, unnest(m.connectors) as u(c)
-    window w as (partition by m.id order by c.at)
+    -- 同じ位置に別々の connector があるときも毎回同じ順に並べる
+    window w as (partition by m.id order by c.at, c.connector_id)
 ),
 
 edge as (
@@ -68,8 +66,15 @@ edge as (
         -- 別々の connector が区間上の同じ位置にあることがある（全国で 76 本）。切り出すと点になるので、
         -- つながりを残すために長さ 0 の線にする
         case
-            when from_at < to_at then st_linesubstring(geometry, from_at, to_at)
-            else st_makeline(st_lineinterpolatepoint(geometry, from_at), st_lineinterpolatepoint(geometry, from_at))
+            -- 区切る必要の無い区間は元の線をそのまま使う（座標を投影の往復で丸めない）
+            when from_at = 0 and to_at = 1 then geometry
+            when from_at < to_at then st_transform(
+                st_linesubstring(geometry_merc, from_at, to_at), 'EPSG:3395', 'EPSG:4326', true
+            )
+            else st_makeline(
+                st_transform(st_lineinterpolatepoint(geometry_merc, from_at), 'EPSG:3395', 'EPSG:4326', true),
+                st_transform(st_lineinterpolatepoint(geometry_merc, from_at), 'EPSG:3395', 'EPSG:4326', true)
+            )
         end as part_geometry
     from part
     where to_gers is not null and from_gers <> to_gers
@@ -83,7 +88,7 @@ placed as (
 )
 
 select
-    row_number() over (order by {{ jis_mesh2('st_x(p.midpoint)', 'st_y(p.midpoint)') }}, p.id, p.from_at) as edge_id,
+    row_number() over (order by {{ jis_mesh2('st_x(p.midpoint)', 'st_y(p.midpoint)') }}, p.id, p.from_at, p.from_gers) as edge_id,
     f.node_id as from_node,
     t.node_id as to_node,
     round(st_length_spheroid(st_flipcoordinates(p.part_geometry)), 1) as length_m,
@@ -91,8 +96,9 @@ select
     p.subclass,
     p.walk,
     p.bike,
-    p.car_any and not {{ has_access_rule('p.rules', no, car_modes, 'forward') }} as car_forward,
-    p.car_any and not {{ has_access_rule('p.rules', no, car_modes, 'backward') }} as car_backward,
+    -- 向きを問わない規則とその向きの規則を合わせて、最後に当てはまるものが効く
+    coalesce({{ access_rule('p.rules', car_modes, 'forward') }} <> 'denied', p.car_default) as car_forward,
+    coalesce({{ access_rule('p.rules', car_modes, 'backward') }} <> 'denied', p.car_default) as car_backward,
     (case p.max_speed.unit when 'mph' then round(p.max_speed.value * 1.609344) else p.max_speed.value end)::integer
         as speed_limit_kmh,
     list_contains(p.flags, 'is_bridge') as is_bridge,

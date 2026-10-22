@@ -24,7 +24,7 @@ https://docs.overturemaps.org/guides/transportation/
 import logging
 from pathlib import Path
 
-from pipelines.places import JAPAN_BBOX, REGION, connect_overture, latest_release
+from pipelines.places import BUCKET, JAPAN_BBOX, connect_overture
 
 logger = logging.getLogger("pipelines")
 
@@ -42,7 +42,7 @@ def bbox_filter(column: str = "bbox") -> str:
 
 
 def extract_transportation(release: str, output_dir: Path) -> tuple[int, int]:
-    base = f"s3://overturemaps-us-west-2/release/{release}"
+    base = f"s3://{BUCKET}/release/{release}"
     con = connect_overture()
 
     con.execute(
@@ -79,15 +79,12 @@ def extract_transportation(release: str, output_dir: Path) -> tuple[int, int]:
         """
     )
 
-    count = lambda path: con.execute(f"SELECT count(*) FROM '{path}'").fetchone()[0]
-    return count(segment), count(connector)
+    segments, connectors = (con.execute(f"SELECT count(*) FROM '{path}'").fetchone()[0] for path in (segment, connector))
+    return segments, connectors
 
 
-def download_transportation() -> None:
+def download_transportation(release: str) -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    release = latest_release()
-    logger.info("Overture release %s", release)
-
     segments, connectors = extract_transportation(release, OUTPUT_DIR)
     logger.info("transportation: %d segments, %d connectors", segments, connectors)
     if segments == 0:

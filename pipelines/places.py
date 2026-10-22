@@ -85,11 +85,8 @@ def extract_places(release: str, output: Path) -> int:
     return con.execute(f"SELECT count(*) FROM '{output}'").fetchone()[0]
 
 
-def download_places() -> None:
+def download_places(release: str) -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    release = latest_release()
-    logger.info("Overture release %s", release)
-
     rows = extract_places(release, OUTPUT_DIR / "place.parquet")
     logger.info("places: %d rows", rows)
     if rows == 0:
