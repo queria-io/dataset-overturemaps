@@ -67,8 +67,8 @@ places の行数はリリース 2026-09-23.1、transportation の行数はリリ
   `gers_id` を使ってください
 
 ```sql
--- 日野駅のまわり（2 次メッシュ 533932）で、徒歩で通れる道
+-- 東京駅のまわり（2 次メッシュ 533946）で、徒歩で通れる道
 select edge_id, from_node, to_node, length_m
 from overturemaps.transportation.road_edge
-where mesh2 = 533932 and walk
+where mesh2 = 533946 and walk
 ```
