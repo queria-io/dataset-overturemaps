@@ -1,7 +1,7 @@
 # dataset-overturemaps
 
 [Overture Maps Foundation](https://overturemaps.org/) が公開するオープンな地図データのうち、
-places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物、base テーマの日本の設備（infrastructure）を Queria のカタログ
+places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物、base テーマの日本の設備（infrastructure）と土地利用（land_use）を Queria のカタログ
 （[data.queria.io](https://data.queria.io/)）へ取り込むデータセットです。
 
 ## データ出典
@@ -56,6 +56,8 @@ Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/p
 | `buildings.raw_building_part` | `building_part` を Overture のスキーマのまま全列で持つ | 約 14 万 |
 | `base.infrastructure` | バス停・信号・駐車場・橋などの設備。1行が1地物。メッシュ・地方公共団体コード付き | 約 350 万 |
 | `base.raw_infrastructure` | `infrastructure` を Overture のスキーマのまま全列で持つ | 約 350 万 |
+| `base.land_use` | 住宅地・農地・公園などの土地利用の区画。1行が1区画。面積・メッシュ・地方公共団体コード付き | 約 190 万 |
+| `base.raw_land_use` | `land_use` を Overture のスキーマのまま全列で持つ | 約 190 万 |
 
 `place` に無い情報（名前の言語別・別名、副カテゴリ、SNS・メールアドレス、2件目以降の住所、
 提供元ごとの元レコード ID と更新時刻など）は `raw_place` にあります。列の意味は
@@ -155,5 +157,24 @@ select lg_code, count(*) filter (where class = 'bus_stop') as bus_stops,
     count(*) filter (where class = 'traffic_signals') as signals
 from overturemaps.base.infrastructure
 where pref_code = '13'
+group by lg_code
+```
+
+## 土地利用（base の land_use）
+
+`land_use` は OpenStreetMap に描かれた土地利用の区画で、ほぼすべてが面です。`infrastructure` と同じく代表点から
+メッシュコードと地方公共団体コードを付け、外形から面積（`area_m2`）を測っています。
+
+- 東京周辺の 12 万件で多かった `class` は、農地（farmland）、住宅地（residential）、公園（park）、草地（grass）、
+  運動場（pitch）の順でした
+- 描かれている範囲は地域によって差が大きく、日野市では住宅地の区画が合わせて 42ha しかありません。市区町村全体の
+  土地利用の割合を出す用途には向きません。公園・学校・墓地・工業地のように輪郭のはっきりした区画を数える用途が向いています
+- 大きな区画は市区町村の境をまたぐことがありますが、`lg_code` は代表点の市区町村の 1 つだけです
+
+```sql
+-- 市区町村ごとの公園の数と面積（東京都）
+select lg_code, count(*) as parks, round(sum(area_m2) / 1e4, 1) as park_ha
+from overturemaps.base.land_use
+where pref_code = '13' and class = 'park'
 group by lg_code
 ```

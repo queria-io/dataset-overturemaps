@@ -1,8 +1,9 @@
 """Overture Maps の base テーマから日本の範囲の地物を取り出す。
 
-base は OpenStreetMap 由来の地物を種類（type）ごとに分けたテーマで、ここでは infrastructure
-（バス停・信号・電柱・橋・トイレなどの設備）を取る。国コードを持たないので、buildings と
-同じく日本の国の範囲を少し膨らませたポリゴンに、外接矩形の中心が入るものに絞る。
+base は OpenStreetMap 由来の地物を種類（type）ごとに分けたテーマで、ここでは
+infrastructure（バス停・信号・電柱・橋・トイレなどの設備）と land_use（住宅地・農地・公園などの
+土地利用）を取る。国コードを持たないので、buildings と同じく日本の国の範囲を少し膨らませた
+ポリゴンに、外接矩形の中心が入るものに絞る。
 
 base の GERS ID は 2026-09 のリリースで全件振り直されたので、ほかのテーマほどリリースを
 またいで安定していない。
@@ -24,7 +25,7 @@ logger = logging.getLogger("pipelines")
 
 OUTPUT_DIR = Path("data/base")
 
-TYPES = ("infrastructure",)
+TYPES = ("infrastructure", "land_use")
 
 
 def extract_base(release: str, output_dir: Path) -> dict[str, int]:

@@ -2,18 +2,19 @@ spec_version: "0.1"
 name: overturemaps
 title: Overture Maps
 description: |-
-  Overture Maps Foundation が公開するオープンな地図データのうち、日本の POI（places テーマ）、道路網（transportation テーマ）、行政区画（divisions テーマ）、建物（buildings テーマ）、設備（base テーマの infrastructure）。毎月、Overture の最新リリースから取り直す。
+  Overture Maps Foundation が公開するオープンな地図データのうち、日本の POI（places テーマ）、道路網（transportation テーマ）、行政区画（divisions テーマ）、建物（buildings テーマ）、設備と土地利用（base テーマの infrastructure・land_use）。毎月、Overture の最新リリースから取り直す。
   places は店舗・飲食店・医療機関・宿泊施設・公園など約290万件で、名称・カテゴリ・住所・電話番号・Web サイト・ブランド・緯度経度と、レコードごとの提供元とライセンスを持つ。位置から市区町村コード・メッシュコードと、施設が入る建物の GERS ID を付けてある。
   transportation は全国の道路を交差点ごとに区切った道路網で、徒歩・自転車・車で通れるか、車の一方通行、規制速度を持つ。到達圏（徒歩 10 分圏など）や経路の計算にそのまま使える。
   divisions は都道府県・市区町村・政令市の区・町丁・字の代表点とポリゴンで、総務省の地方公共団体コードを付けてある。Overture の GERS ID と市区町村コードの対応表として、POI や建物を市区町村コードを持つ他のデータと結ぶのに使える。
   buildings は全国約 5,400 万棟の建物の外形で、高さ・階数・用途（一部）と、メッシュコード（1〜3 次）・地方公共団体コードを持つ。
   base.infrastructure は全国約 350 万件のバス停・信号・横断歩道・駐車場・橋・送電線・ベンチなどの設備で、メッシュコード・地方公共団体コードを付けてある。
+  base.land_use は全国約 190 万件の住宅地・農地・公園・学校の敷地・墓地などの土地利用の区画で、面積・メッシュコード・地方公共団体コードを付けてある。
 
   出典: Overture Maps Foundation, overturemaps.org（https://docs.overturemaps.org/attribution/）。
   Queria が places テーマから住所の国コードが JP のレコードを取り出して作成した。places.raw_place は Overture のスキーマのまま全列を持ち、places.place は主な列を平坦化したもの。
   transportation テーマは、Queria が日本の範囲の道路区間（subtype = road）を取り出し、transportation.road_edge / road_node では交差点ごとに区切り直して通れる手段を付けた。
   buildings テーマは、Queria が日本の範囲の建物を取り出し、buildings.building では外形の重心からメッシュコードと、重心が入る市区町村のコード（divisions.division_area から）を付けた。
-  base テーマは、Queria が日本の範囲の infrastructure を取り出し、base.infrastructure では地物の上の代表点からメッシュコードと市区町村のコードを付けた。
+  base テーマは、Queria が日本の範囲の infrastructure と land_use を取り出し、base.infrastructure / land_use では地物の上の代表点からメッシュコードと市区町村のコードを付けた。
   divisions テーマは、Queria が国コードが JP の区画を取り出し、divisions.division / division_area では都道府県名と市区町村名を総務省「全国地方公共団体コード」（Queria の lg_code データセット経由、政府標準利用規約 第2.0版）と照合してコードを付けた。
 
   transportation テーマは OpenStreetMap に由来し、Open Database License（ODbL 1.0）が適用される。© OpenStreetMap contributors（https://www.openstreetmap.org/copyright）。
@@ -131,4 +132,4 @@ schemas:
   - name: buildings
     title: 建物
   - name: base
-    title: 設備
+    title: 設備・土地利用

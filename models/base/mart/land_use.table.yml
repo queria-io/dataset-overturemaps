@@ -1,0 +1,81 @@
+schema: base
+name: land_use
+title: 日本の土地利用
+description: Overture Maps base テーマの land_use のうち日本の範囲に入るもの。1行が1区画で、住宅地・商業地・工業地・農地・公園・運動場・学校や病院の敷地・墓地・寺社の境内などの土地の使われ方を面で持つ。元はほぼ OpenStreetMap で、描かれている範囲は地域によって差が大きい。区画の上に取った代表点から JIS X 0410 のメッシュコード（1〜3 次）と、代表点が入る市区町村の地方公共団体コード（divisions.division_area から引いたもの。政令市は区）を、外形から面積を付けたので、市区町村やメッシュごとに土地利用の面積を集計できる。land_use_id は Overture の GERS ID だが、base テーマの ID は 2026-09 のリリースで全件振り直されたので、ほかのテーマほどリリースをまたいで安定していない。
+keywords:
+- 土地利用
+- 農地
+- 公園
+- 住宅地
+- 地方公共団体コード
+- メッシュ
+- GIS
+published: true
+sources:
+- path: https://docs.overturemaps.org/guides/base/
+fields:
+- name: land_use_id
+  title: GERS ID
+  description: Overture が地物に振る ID。base テーマの ID は 2026-09 に全件振り直されたので、リリースをまたいだ突き合わせには注意する
+- name: subtype
+  title: 種類の大分類
+  description: residential / developed / agriculture / park / recreation / education / medical / cemetery / religious / protected など
+- name: class
+  title: 種類
+  description: residential / farmland / park / grass / pitch / school / cemetery / industrial / commercial など subtype より細かい分類
+- name: name
+  title: 名称
+  description: 主たる名称。名前の付いた地物だけ（公園名・学校名など）
+- name: level
+  title: 階層
+  description: 地面からの相対的な高さの順位（OSM の layer）。高架は正、地下は負。多くの行で NULL
+- name: surface
+  title: 表面の素材
+  description: 運動場の舗装の種類など。多くの行で NULL
+- name: elevation
+  title: 標高（m）
+  description: ほぼすべての行で NULL
+- name: wikidata
+  title: Wikidata ID
+  description: 地物に紐づく Wikidata の項目。多くの行で NULL
+- name: source_dataset
+  title: 提供元
+  description: 地物の提供元。日本ではほぼ OpenStreetMap
+- name: geometry_type
+  title: 形状の種類
+  description: ほぼすべてが POLYGON / MULTIPOLYGON。OSM で閉じていない線のまま描かれた区画だけ LINESTRING
+- name: area_m2
+  title: 面積（m²）
+  description: 外形の面積を楕円体の上で測ったもの。LINESTRING の区画は 0
+- name: pref_code
+  title: 都道府県コード
+  description: 2桁。代表点が入る市区町村の都道府県
+  semantic: { role: entity, name: prefecture }
+- name: lg_code
+  title: 地方公共団体コード
+  description: 6桁（検査数字つき）。代表点が入る市区町村のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
+  semantic: { role: entity, name: city }
+- name: lon
+  title: 経度
+  description: 代表点（区画の上に取った点）
+- name: lat
+  title: 緯度
+  description: 代表点（区画の上に取った点）
+- name: mesh1
+  title: 1 次メッシュコード
+  description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+  semantic: { role: entity, name: mesh }
+- name: mesh2
+  title: 2 次メッシュコード
+  description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
+  semantic: { role: entity, name: mesh }
+- name: mesh3
+  title: 3 次メッシュコード
+  description: 代表点が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）。行はこの順に並んでいるので、メッシュで絞ると必要な部分だけを読む
+  semantic: { role: entity, name: mesh }
+- name: geometry
+  title: ジオメトリ
+  description: 区画の POLYGON / MULTIPOLYGON（一部 LINESTRING）
+- name: release
+  title: リリース
+  description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）

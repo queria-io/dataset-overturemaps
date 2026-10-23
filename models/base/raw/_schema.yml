@@ -8,3 +8,10 @@ models:
     data_tests:
     - not_null
     - unique
+- name: raw_land_use
+  description: Overture Maps base テーマの land_use のうち日本の範囲に入るもの。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique

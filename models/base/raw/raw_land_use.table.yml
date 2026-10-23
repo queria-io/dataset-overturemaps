@@ -1,0 +1,11 @@
+schema: base
+name: raw_land_use
+title: 日本の土地利用（Overture のスキーマのまま）
+description: Overture Maps base テーマの land_use のうち日本の範囲に入るもの。base.land_use と同じ地物を、Overture のスキーマのまま全列で持つ。land_use に無い OpenStreetMap の元のタグ（source_tags）や提供元ごとの元レコード ID（sources）はここにある。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/base/land_use/）を参照。release 列だけは Queria が足した取り込み元のリリース名。
+keywords:
+- 土地利用
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/base/land_use/

@@ -6,7 +6,7 @@
 2. transportation: 日本の道路網を取り出す
 3. divisions: 日本の行政区画と、照合に使う地方公共団体コードを取り出す
 4. buildings: 日本の建物を取り出す
-5. base: 日本の設備（infrastructure）を取り出す
+5. base: 日本の設備（infrastructure）と土地利用（land_use）を取り出す
 6. dbt: dbt ビルド
 """
 
@@ -50,7 +50,7 @@ def main():
     logger.info("4/6: buildings (Overture Maps 日本の建物)")
     download_buildings(release)
 
-    logger.info("5/6: base (Overture Maps 日本の設備)")
+    logger.info("5/6: base (Overture Maps 日本の設備と土地利用)")
     download_base(release)
 
     logger.info("6/6: dbt build")
