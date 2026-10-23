@@ -1,0 +1,12 @@
+schema: base
+name: raw_infrastructure
+title: 日本の設備（Overture のスキーマのまま）
+description: Overture Maps base テーマの infrastructure のうち日本の範囲に入るもの。base.infrastructure と同じ地物を、Overture のスキーマのまま全列で持つ。infrastructure に無い OpenStreetMap の元のタグ（source_tags）や提供元ごとの元レコード ID（sources）はここにある。列の意味は Overture のスキーマのリファレンス（https://docs.overturemaps.org/schema/reference/base/infrastructure/）を参照。release 列だけは Queria が足した取り込み元のリリース名。
+keywords:
+- インフラ
+- 設備
+- GIS
+- Overture Maps
+published: true
+sources:
+- path: https://docs.overturemaps.org/schema/reference/base/infrastructure/

@@ -1,7 +1,7 @@
 schema: places
 name: place
 title: 日本の POI
-description: Overture Maps places テーマのうち、住所の国コードが JP の施設。1行が1施設で、店舗・飲食店・医療機関・宿泊施設・公園・寺社などを含む。複数の提供元が同じ施設を持つ場合、Overture が1件にまとめたうえで配布している。営業状態（operating_status）はほとんどのレコードで空なので、閉店した施設を除く用途には使えない。
+description: Overture Maps places テーマのうち、住所の国コードが JP の施設。1行が1施設で、店舗・飲食店・医療機関・宿泊施設・公園・寺社などを含む。複数の提供元が同じ施設を持つ場合、Overture が1件にまとめたうえで配布している。営業状態（operating_status）はほとんどのレコードで空なので、閉店した施設を除く用途には使えない。位置から地方公共団体コード（政令市は区）・メッシュコード（1〜3 次）と、施設が入る建物の building_id を付けたので、市区町村コードやメッシュを持つ他のデータセット、buildings.building と結合できる。
 keywords:
 - POI
 - 施設
@@ -69,6 +69,29 @@ fields:
   title: 緯度
 - name: lon
   title: 経度
+- name: pref_code
+  title: 都道府県コード
+  description: 2桁。施設が入る市区町村の都道府県。住所の region は多くの行で空なので、都道府県で絞るときはこちらを使う
+  semantic: { role: entity, name: prefecture }
+- name: lg_code
+  title: 地方公共団体コード
+  description: 6桁（検査数字つき）。施設の位置が入る市区町村（divisions.division_area）のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
+  semantic: { role: entity, name: city }
+- name: building_id
+  title: 建物の GERS ID
+  description: 施設の位置が入る建物（buildings.building）の building_id。外形が重なる建物では小さい方。建物の外にある施設や、外形の無い建物の中の施設は NULL
+- name: mesh1
+  title: 1 次メッシュコード
+  description: 施設の位置が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+  semantic: { role: entity, name: mesh }
+- name: mesh2
+  title: 2 次メッシュコード
+  description: 施設の位置が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
+  semantic: { role: entity, name: mesh }
+- name: mesh3
+  title: 3 次メッシュコード
+  description: 施設の位置が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）
+  semantic: { role: entity, name: mesh }
 - name: geometry
   title: ジオメトリ
   description: 施設の位置を表す POINT

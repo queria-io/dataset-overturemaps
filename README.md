@@ -1,7 +1,7 @@
 # dataset-overturemaps
 
 [Overture Maps Foundation](https://overturemaps.org/) が公開するオープンな地図データのうち、
-places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物を Queria のカタログ
+places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物、base テーマの日本の設備（infrastructure）と土地利用（land_use）を Queria のカタログ
 （[data.queria.io](https://data.queria.io/)）へ取り込むデータセットです。
 
 ## データ出典
@@ -12,6 +12,11 @@ Overture は月1回ほどリリースを出し、古いリリースは数か月�
 
 places テーマのうち、住所の国コードが JP のレコードだけを取り出します。外接矩形だけで絞ると
 韓国・ロシア極東・中国の一部が混ざるためです。
+
+`place` には位置から、施設が入る市区町村の地方公共団体コード（`lg_code`、政令市は区）、都道府県コード、
+メッシュコード（`mesh1` / `mesh2` / `mesh3`）、施設が入る建物の `building_id` を付けています。住所の `region` は
+多くの行で空なので、地域で絞るときはこちらを使ってください。東京周辺で試したところ、施設の約 7 割が建物の中に
+入りました。建物の外にある施設（駐車場・公園・ATM など）や、外形の無い建物の中の施設は `building_id` が NULL です。
 
 提供元ごとにライセンスが違い、各レコードの `source_licenses` 列がそのレコードのライセンスを示します。
 
@@ -49,12 +54,16 @@ Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/p
 | `buildings.building_part` | 建物の部分（高層部など）。`building_id` で `building` を指す | 約 14 万 |
 | `buildings.raw_building` | `building` を Overture のスキーマのまま全列で持つ | 約 5,400 万 |
 | `buildings.raw_building_part` | `building_part` を Overture のスキーマのまま全列で持つ | 約 14 万 |
+| `base.infrastructure` | バス停・信号・駐車場・橋などの設備。1行が1地物。メッシュ・地方公共団体コード付き | 約 350 万 |
+| `base.raw_infrastructure` | `infrastructure` を Overture のスキーマのまま全列で持つ | 約 350 万 |
+| `base.land_use` | 住宅地・農地・公園などの土地利用の区画。1行が1区画。面積・メッシュ・地方公共団体コード付き | 約 190 万 |
+| `base.raw_land_use` | `land_use` を Overture のスキーマのまま全列で持つ | 約 190 万 |
 
 `place` に無い情報（名前の言語別・別名、副カテゴリ、SNS・メールアドレス、2件目以降の住所、
 提供元ごとの元レコード ID と更新時刻など）は `raw_place` にあります。列の意味は
 [Overture のスキーマ](https://docs.overturemaps.org/schema/reference/places/place/)を見てください。
 
-places の行数はリリース 2026-09-23.1、transportation と divisions の行数はリリース 2026-10-21.0 の実測です。buildings の行数は同じリリースを 0.05 度の格子で数えた概数で、初回のビルドで確定します。
+places の行数はリリース 2026-09-23.1、transportation と divisions の行数はリリース 2026-10-21.0 の実測です。buildings と base の行数は同じリリースを 0.05 度の格子で数えた概数で、初回のビルドで確定します。
 
 カテゴリは Overture 独自の英語の分類で、`basic_category`（262種）、`taxonomy_primary`（1,415種）、
 `taxonomy_hierarchy`（最大6段）の3つの粒度があります。同じ業態でも施設によって付いている粒度が
@@ -128,4 +137,44 @@ select mesh3, count(*) as buildings, count(height) as with_height
 from overturemaps.buildings.building
 where mesh2 = 533946
 group by mesh3
+```
+
+## 設備（base の infrastructure）
+
+`infrastructure` は OpenStreetMap 由来の設備で、点（バス停・信号・ベンチ・自動販売機など）、線（送電線・柵など）、
+面（駐車場・橋など）が混ざります。地物の上に取った代表点（`lon` / `lat`）からメッシュコードと、代表点が入る
+市区町村の地方公共団体コードを付けています。種類は `subtype`（大分類）と `class`（細かい分類）で絞ります。
+
+- 東京周辺の 52 万件で多かった `class` は、横断歩道（crossing）、駐車場（parking）、一時停止の標識（stop）、橋（bridge）、
+  信号（traffic_signals）、バス停（bus_stop）の順でした
+- OpenStreetMap に描かれたものだけなので、地域によって網羅の度合いが違います。件数を地域で比べるときは注意してください
+- base テーマの GERS ID（`infrastructure_id`）は 2026-09 のリリースで全件振り直されました。ほかのテーマほど
+  リリースをまたいで安定していません
+
+```sql
+-- 市区町村ごとのバス停と信号の数（東京都）
+select lg_code, count(*) filter (where class = 'bus_stop') as bus_stops,
+    count(*) filter (where class = 'traffic_signals') as signals
+from overturemaps.base.infrastructure
+where pref_code = '13'
+group by lg_code
+```
+
+## 土地利用（base の land_use）
+
+`land_use` は OpenStreetMap に描かれた土地利用の区画で、ほぼすべてが面です。`infrastructure` と同じく代表点から
+メッシュコードと地方公共団体コードを付け、外形から面積（`area_m2`）を測っています。
+
+- 東京周辺の 12 万件で多かった `class` は、農地（farmland）、住宅地（residential）、公園（park）、草地（grass）、
+  運動場（pitch）の順でした
+- 描かれている範囲は地域によって差が大きく、日野市では住宅地の区画が合わせて 42ha しかありません。市区町村全体の
+  土地利用の割合を出す用途には向きません。公園・学校・墓地・工業地のように輪郭のはっきりした区画を数える用途が向いています
+- 大きな区画は市区町村の境をまたぐことがありますが、`lg_code` は代表点の市区町村の 1 つだけです
+
+```sql
+-- 市区町村ごとの公園の数と面積（東京都）
+select lg_code, count(*) as parks, round(sum(area_m2) / 1e4, 1) as park_ha
+from overturemaps.base.land_use
+where pref_code = '13' and class = 'park'
+group by lg_code
 ```
