@@ -16,7 +16,7 @@ with land_use as not materialized (
         elevation,
         wikidata,
         sources[1].dataset as source_dataset,
-        st_geometrytype(geometry) as geometry_type,
+        st_geometrytype(geometry)::varchar as geometry_type,
         -- st_area_spheroid は緯度・経度の順の座標を受け取るので入れ替えて渡す。線の区画は 0 になる
         st_area_spheroid(st_flipcoordinates(geometry)) as area_m2,
         st_pointonsurface(geometry) as point,

@@ -15,7 +15,7 @@ with infrastructure as not materialized (
         surface,
         wikidata,
         sources[1].dataset as source_dataset,
-        st_geometrytype(geometry) as geometry_type,
+        st_geometrytype(geometry)::varchar as geometry_type,
         st_pointonsurface(geometry) as point,
         geometry,
         release
