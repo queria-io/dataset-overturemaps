@@ -1,0 +1,10 @@
+version: 2
+
+models:
+- name: raw_infrastructure
+  description: Overture Maps base テーマの infrastructure のうち日本の範囲に入るもの。Overture のスキーマのまま全列を持ち、取り込んだリリース名を release に足してある。
+  columns:
+  - name: id
+    data_tests:
+    - not_null
+    - unique

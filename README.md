@@ -1,7 +1,7 @@
 # dataset-overturemaps
 
 [Overture Maps Foundation](https://overturemaps.org/) が公開するオープンな地図データのうち、
-places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物を Queria のカタログ
+places テーマの日本の POI、transportation テーマの日本の道路網、divisions テーマの日本の行政区画、buildings テーマの日本の建物、base テーマの日本の設備（infrastructure）を Queria のカタログ
 （[data.queria.io](https://data.queria.io/)）へ取り込むデータセットです。
 
 ## データ出典
@@ -54,12 +54,14 @@ Foursquare 由来のデータには [NOTICE](https://opensource.foursquare.com/p
 | `buildings.building_part` | 建物の部分（高層部など）。`building_id` で `building` を指す | 約 14 万 |
 | `buildings.raw_building` | `building` を Overture のスキーマのまま全列で持つ | 約 5,400 万 |
 | `buildings.raw_building_part` | `building_part` を Overture のスキーマのまま全列で持つ | 約 14 万 |
+| `base.infrastructure` | バス停・信号・駐車場・橋などの設備。1行が1地物。メッシュ・地方公共団体コード付き | 約 350 万 |
+| `base.raw_infrastructure` | `infrastructure` を Overture のスキーマのまま全列で持つ | 約 350 万 |
 
 `place` に無い情報（名前の言語別・別名、副カテゴリ、SNS・メールアドレス、2件目以降の住所、
 提供元ごとの元レコード ID と更新時刻など）は `raw_place` にあります。列の意味は
 [Overture のスキーマ](https://docs.overturemaps.org/schema/reference/places/place/)を見てください。
 
-places の行数はリリース 2026-09-23.1、transportation と divisions の行数はリリース 2026-10-21.0 の実測です。buildings の行数は同じリリースを 0.05 度の格子で数えた概数で、初回のビルドで確定します。
+places の行数はリリース 2026-09-23.1、transportation と divisions の行数はリリース 2026-10-21.0 の実測です。buildings と base の行数は同じリリースを 0.05 度の格子で数えた概数で、初回のビルドで確定します。
 
 カテゴリは Overture 独自の英語の分類で、`basic_category`（262種）、`taxonomy_primary`（1,415種）、
 `taxonomy_hierarchy`（最大6段）の3つの粒度があります。同じ業態でも施設によって付いている粒度が
@@ -133,4 +135,25 @@ select mesh3, count(*) as buildings, count(height) as with_height
 from overturemaps.buildings.building
 where mesh2 = 533946
 group by mesh3
+```
+
+## 設備（base の infrastructure）
+
+`infrastructure` は OpenStreetMap 由来の設備で、点（バス停・信号・ベンチ・自動販売機など）、線（送電線・柵など）、
+面（駐車場・橋など）が混ざります。地物の上に取った代表点（`lon` / `lat`）からメッシュコードと、代表点が入る
+市区町村の地方公共団体コードを付けています。種類は `subtype`（大分類）と `class`（細かい分類）で絞ります。
+
+- 東京周辺の 52 万件で多かった `class` は、横断歩道（crossing）、駐車場（parking）、一時停止の標識（stop）、橋（bridge）、
+  信号（traffic_signals）、バス停（bus_stop）の順でした
+- OpenStreetMap に描かれたものだけなので、地域によって網羅の度合いが違います。件数を地域で比べるときは注意してください
+- base テーマの GERS ID（`infrastructure_id`）は 2026-09 のリリースで全件振り直されました。ほかのテーマほど
+  リリースをまたいで安定していません
+
+```sql
+-- 市区町村ごとのバス停と信号の数（東京都）
+select lg_code, count(*) filter (where class = 'bus_stop') as bus_stops,
+    count(*) filter (where class = 'traffic_signals') as signals
+from overturemaps.base.infrastructure
+where pref_code = '13'
+group by lg_code
 ```
