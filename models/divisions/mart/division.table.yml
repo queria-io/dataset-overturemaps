@@ -34,9 +34,17 @@ fields:
   description: 階層をさかのぼった都道府県（subtype = region）の名称
 - name: pref_code
   title: 都道府県コード
+  description: 非推奨。prefecture_code と同じ値で、のちに削除する
+  semantic: { role: dimension }
+- name: prefecture_code
+  title: 都道府県コード
   description: 2桁。prefecture を地方公共団体コードの一覧と照合したもの
   semantic: { role: entity, name: prefecture }
 - name: lg_code
+  title: 地方公共団体コード
+  description: 非推奨。local_government_code と同じ値で、のちに削除する
+  semantic: { role: dimension }
+- name: local_government_code
   title: 地方公共団体コード
   description: 6桁（検査数字つき）。is_municipality が true の行はその市区町村のコード、町丁・字の行は階層をさかのぼって最初に見つかった市区町村（政令市なら区）のコード。都道府県・国と、照合できなかった区画は NULL。5桁のコードと結合するときは先頭 5 桁を使う
   semantic: { role: entity, name: city }
@@ -56,7 +64,13 @@ fields:
   title: Wikidata ID
 - name: lon
   title: 経度
+  description: 非推奨。longitude と同じ値で、のちに削除する
+- name: longitude
+  title: 経度
 - name: lat
+  title: 緯度
+  description: 非推奨。latitude と同じ値で、のちに削除する
+- name: latitude
   title: 緯度
 - name: mesh1
   title: 1 次メッシュコード

@@ -14,7 +14,9 @@ select
     row_number() over (order by {{ jis_mesh2('lon', 'lat') }}, gers_id) as node_id,
     gers_id,
     lon,
+    lon as longitude,
     lat,
+    lat as latitude,
     {{ jis_mesh1('lon', 'lat') }} as mesh1,
     {{ jis_mesh2('lon', 'lat') }} as mesh2,
     geometry
