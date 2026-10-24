@@ -10,6 +10,7 @@ keywords:
 - 地方公共団体コード
 - GIS
 published: true
+themes: [land_climate]
 sources:
 - path: https://docs.overturemaps.org/guides/divisions/
 fields:

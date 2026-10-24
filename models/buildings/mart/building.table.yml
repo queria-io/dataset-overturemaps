@@ -12,6 +12,7 @@ keywords:
 - GERS
 - GIS
 published: true
+themes: [housing_land]
 sources:
 - path: https://docs.overturemaps.org/guides/buildings/
 fields:

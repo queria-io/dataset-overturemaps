@@ -51,6 +51,7 @@ keywords:
   - Foursquare
 homepage: https://github.com/queria-io/dataset-overturemaps
 language: ja
+themes: [land_climate, housing_land, transport_tourism, commerce_services]
 
 licenses:
   - id: CDLA-Permissive-2.0
