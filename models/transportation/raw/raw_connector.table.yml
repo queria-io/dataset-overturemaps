@@ -8,5 +8,6 @@ keywords:
 - GIS
 - Overture Maps
 published: true
+themes: [transport_tourism]
 sources:
 - path: https://docs.overturemaps.org/schema/reference/transportation/connector/

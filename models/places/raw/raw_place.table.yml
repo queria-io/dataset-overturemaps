@@ -8,5 +8,6 @@ keywords:
 - GIS
 - Overture Maps
 published: true
+themes: [commerce_services]
 sources:
 - path: https://docs.overturemaps.org/schema/reference/places/place/

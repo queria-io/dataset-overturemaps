@@ -7,5 +7,6 @@ keywords:
 - GIS
 - Overture Maps
 published: true
+themes: [housing_land]
 sources:
 - path: https://docs.overturemaps.org/schema/reference/buildings/building_part/

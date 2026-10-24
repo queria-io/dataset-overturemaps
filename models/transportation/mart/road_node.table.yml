@@ -10,6 +10,7 @@ keywords:
 - 到達圏
 - GIS
 published: true
+themes: [transport_tourism]
 sources:
 - path: https://docs.overturemaps.org/guides/transportation/
 fields:

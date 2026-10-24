@@ -11,6 +11,7 @@ keywords:
 - メッシュ
 - GIS
 published: true
+themes: [land_climate]
 sources:
 - path: https://docs.overturemaps.org/guides/base/
 fields:

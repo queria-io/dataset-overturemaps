@@ -8,5 +8,6 @@ keywords:
 - GIS
 - Overture Maps
 published: true
+themes: [land_climate]
 sources:
 - path: https://docs.overturemaps.org/schema/reference/base/infrastructure/
