@@ -42,8 +42,8 @@ fields:
   description: 非推奨。local_government_code と同じ値で、のちに削除する
   semantic: { role: dimension }
 - name: local_government_code
-  title: 地方公共団体コード
-  description: 6桁（検査数字つき）。divisions.division の lg_code と同じ
+  title: 全国地方公共団体コード
+  description: 6桁（検査数字つき）。divisions.division の local_government_code と同じ
   semantic: { role: entity, name: city }
 - name: is_municipality
   title: 市区町村そのものか

@@ -98,7 +98,7 @@ fields:
   description: 非推奨。local_government_code と同じ値で、のちに削除する
   semantic: { role: dimension }
 - name: local_government_code
-  title: 地方公共団体コード
+  title: 全国地方公共団体コード
   description: 6桁（検査数字つき）。施設の位置が入る市区町村（divisions.division_area）のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
   semantic: { role: entity, name: city }
 - name: building_id
