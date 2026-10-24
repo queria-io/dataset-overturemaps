@@ -26,8 +26,11 @@ with place as not materialized (
         brand.wikidata as brand_wikidata,
         addresses[1].freeform as address,
         addresses[1].locality as locality,
+        addresses[1].locality as address_locality,
         addresses[1].region as region,
+        addresses[1].region as address_region,
         addresses[1].postcode as postcode,
+        addresses[1].postcode as postal_code,
         array_to_string(phones, ' ') as phones,
         array_to_string(websites, ' ') as websites,
         array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.dataset))), ', ')
@@ -35,7 +38,9 @@ with place as not materialized (
         array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.license))), ', ')
             as source_licenses,
         st_y(geometry) as lat,
+        st_y(geometry) as latitude,
         st_x(geometry) as lon,
+        st_x(geometry) as longitude,
         geometry,
         release
     from {{ ref('raw_place') }}
@@ -65,7 +70,9 @@ located_building as (
 select
     place.* exclude (geometry, release),
     left(located_municipality.lg_code, 2) as pref_code,
+    left(located_municipality.lg_code, 2) as prefecture_code,
     located_municipality.lg_code,
+    located_municipality.lg_code as local_government_code,
     located_building.building_id,
     {{ jis_mesh1('place.lon', 'place.lat') }} as mesh1,
     {{ jis_mesh2('place.lon', 'place.lat') }} as mesh2,

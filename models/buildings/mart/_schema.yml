@@ -12,10 +12,10 @@ models:
   - name: source_dataset
     data_tests:
     - not_null
-  - name: lon
+  - name: longitude
     data_tests:
     - not_null
-  - name: lat
+  - name: latitude
     data_tests:
     - not_null
   - name: mesh3

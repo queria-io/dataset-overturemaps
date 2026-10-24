@@ -21,7 +21,13 @@ fields:
   description: Overture が connector に振る ID。transportation.raw_connector の id
 - name: lon
   title: 経度
+  description: 非推奨。longitude と同じ値で、のちに削除する
+- name: longitude
+  title: 経度
 - name: lat
+  title: 緯度
+  description: 非推奨。latitude と同じ値で、のちに削除する
+- name: latitude
   title: 緯度
 - name: mesh1
   title: 1 次メッシュコード

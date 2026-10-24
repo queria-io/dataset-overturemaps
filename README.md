@@ -13,8 +13,8 @@ Overture は月1回ほどリリースを出し、古いリリースは数か月�
 places テーマのうち、住所の国コードが JP のレコードだけを取り出します。外接矩形だけで絞ると
 韓国・ロシア極東・中国の一部が混ざるためです。
 
-`place` には位置から、施設が入る市区町村の地方公共団体コード（`lg_code`、政令市は区）、都道府県コード、
-メッシュコード（`mesh1` / `mesh2` / `mesh3`）、施設が入る建物の `building_id` を付けています。住所の `region` は
+`place` には位置から、施設が入る市区町村の地方公共団体コード（`local_government_code`、政令市は区）、都道府県コード、
+メッシュコード（`mesh1` / `mesh2` / `mesh3`）、施設が入る建物の `building_id` を付けています。住所の `address_region` は
 多くの行で空なので、地域で絞るときはこちらを使ってください。東京周辺で試したところ、施設の約 7 割が建物の中に
 入りました。建物の外にある施設（駐車場・公園・ATM など）や、外形の無い建物の中の施設は `building_id` が NULL です。
 
@@ -115,7 +115,7 @@ POI や建物の位置を `division_area` に当てると、市区町村コー�
 
 ```sql
 -- 日野駅の位置が入る市区町村と町丁
-select subtype, name, lg_code
+select subtype, name, local_government_code
 from overturemaps.divisions.division_area
 where is_land and st_contains(geometry, st_point(139.3948, 35.6795))
 ```
@@ -142,7 +142,7 @@ group by mesh3
 ## 設備（base の infrastructure）
 
 `infrastructure` は OpenStreetMap 由来の設備で、点（バス停・信号・ベンチ・自動販売機など）、線（送電線・柵など）、
-面（駐車場・橋など）が混ざります。地物の上に取った代表点（`lon` / `lat`）からメッシュコードと、代表点が入る
+面（駐車場・橋など）が混ざります。地物の上に取った代表点（`longitude` / `latitude`）からメッシュコードと、代表点が入る
 市区町村の地方公共団体コードを付けています。種類は `subtype`（大分類）と `class`（細かい分類）で絞ります。
 
 - 東京周辺の 52 万件で多かった `class` は、横断歩道（crossing）、駐車場（parking）、一時停止の標識（stop）、橋（bridge）、
@@ -153,11 +153,11 @@ group by mesh3
 
 ```sql
 -- 市区町村ごとのバス停と信号の数（東京都）
-select lg_code, count(*) filter (where class = 'bus_stop') as bus_stops,
+select local_government_code, count(*) filter (where class = 'bus_stop') as bus_stops,
     count(*) filter (where class = 'traffic_signals') as signals
 from overturemaps.base.infrastructure
-where pref_code = '13'
-group by lg_code
+where prefecture_code = '13'
+group by local_government_code
 ```
 
 ## 土地利用（base の land_use）
@@ -169,12 +169,12 @@ group by lg_code
   運動場（pitch）の順でした
 - 描かれている範囲は地域によって差が大きく、日野市では住宅地の区画が合わせて 42ha しかありません。市区町村全体の
   土地利用の割合を出す用途には向きません。公園・学校・墓地・工業地のように輪郭のはっきりした区画を数える用途が向いています
-- 大きな区画は市区町村の境をまたぐことがありますが、`lg_code` は代表点の市区町村の 1 つだけです
+- 大きな区画は市区町村の境をまたぐことがありますが、`local_government_code` は代表点の市区町村の 1 つだけです
 
 ```sql
 -- 市区町村ごとの公園の数と面積（東京都）
-select lg_code, count(*) as parks, round(sum(area_m2) / 1e4, 1) as park_ha
+select local_government_code, count(*) as parks, round(sum(area_m2) / 1e4, 1) as park_ha
 from overturemaps.base.land_use
-where pref_code = '13' and class = 'park'
-group by lg_code
+where prefecture_code = '13' and class = 'park'
+group by local_government_code
 ```

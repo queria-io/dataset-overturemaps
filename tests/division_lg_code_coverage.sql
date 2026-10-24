@@ -5,7 +5,7 @@
    Overture に区画の無い飛騨市だった。一つの市の区だけが合わない取りこぼし（区の再編で一覧と
    Overture の片方が古いとき）は、この件数の下限では検出できない。 #}
 
-select count(distinct lg_code) as matched
+select count(distinct local_government_code) as matched
 from {{ ref('division') }}
 where is_municipality
-having count(distinct lg_code) < 1700
+having count(distinct local_government_code) < 1700
