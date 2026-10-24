@@ -15,9 +15,7 @@ models:
     - accepted_values:
         arguments:
           values: [country, region, county, locality, macrohood, neighborhood, microhood]
-  - name: pref_code
   - name: prefecture_code
-  - name: lg_code
   - name: local_government_code
   - name: is_municipality
     data_tests:

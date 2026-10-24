@@ -23,7 +23,7 @@ with infrastructure as not materialized (
 ),
 
 municipality as (
-    select lg_code, subtype = 'macrohood' as is_ward, geometry
+    select local_government_code as lg_code, subtype = 'macrohood' as is_ward, geometry
     from {{ ref('division_area') }}
     where is_municipality and is_land
 ),
@@ -37,13 +37,9 @@ located as (
 
 select
     infrastructure.* exclude (point, geometry, release),
-    left(located.lg_code, 2) as pref_code,
     left(located.lg_code, 2) as prefecture_code,
-    located.lg_code,
     located.lg_code as local_government_code,
-    st_x(infrastructure.point) as lon,
     st_x(infrastructure.point) as longitude,
-    st_y(infrastructure.point) as lat,
     st_y(infrastructure.point) as latitude,
     {{ jis_mesh1('st_x(infrastructure.point)', 'st_y(infrastructure.point)') }} as mesh1,
     {{ jis_mesh2('st_x(infrastructure.point)', 'st_y(infrastructure.point)') }} as mesh2,

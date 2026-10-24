@@ -51,31 +51,17 @@ fields:
 - name: area_m2
   title: 建築面積（m²）
   description: 外形の面積を楕円体の上で測ったもの
-- name: pref_code
-  title: 都道府県コード
-  description: 非推奨。prefecture_code と同じ値で、のちに削除する
-  semantic: { role: dimension }
 - name: prefecture_code
   title: 都道府県コード
   description: 2桁。重心が入る市区町村の都道府県
   semantic: { role: entity, name: prefecture }
-- name: lg_code
-  title: 地方公共団体コード
-  description: 非推奨。local_government_code と同じ値で、のちに削除する
-  semantic: { role: dimension }
 - name: local_government_code
   title: 全国地方公共団体コード
   description: 6桁（検査数字つき）。重心が入る市区町村のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
   semantic: { role: entity, name: city }
-- name: lon
-  title: 経度
-  description: 非推奨。longitude と同じ値で、のちに削除する
 - name: longitude
   title: 経度
   description: 外形の重心
-- name: lat
-  title: 緯度
-  description: 非推奨。latitude と同じ値で、のちに削除する
 - name: latitude
   title: 緯度
   description: 外形の重心
