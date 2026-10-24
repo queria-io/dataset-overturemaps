@@ -29,7 +29,7 @@ with building as not materialized (
 ),
 
 municipality as (
-    select lg_code, subtype = 'macrohood' as is_ward, geometry
+    select local_government_code as lg_code, subtype = 'macrohood' as is_ward, geometry
     from {{ ref('division_area') }}
     where is_municipality and is_land
 ),
@@ -59,13 +59,9 @@ select
     building.roof_shape,
     building.source_dataset,
     building.area_m2,
-    left(located.lg_code, 2) as pref_code,
     left(located.lg_code, 2) as prefecture_code,
-    located.lg_code,
     located.lg_code as local_government_code,
-    st_x(building.centroid) as lon,
     st_x(building.centroid) as longitude,
-    st_y(building.centroid) as lat,
     st_y(building.centroid) as latitude,
     {{ jis_mesh1('st_x(building.centroid)', 'st_y(building.centroid)') }} as mesh1,
     {{ jis_mesh2('st_x(building.centroid)', 'st_y(building.centroid)') }} as mesh2,

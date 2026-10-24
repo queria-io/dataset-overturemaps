@@ -46,20 +46,10 @@ fields:
 - name: address
   title: 住所
   description: 提供元が登録した住所の文字列。表記は提供元によって揃っていない
-- name: locality
-  title: 市区町村
-  description: 非推奨。address_locality と同じ値で、のちに削除する
 - name: address_locality
   title: 市区町村
-- name: region
-  title: 都道府県
-  description: 非推奨。address_region と同じ値で、のちに削除する
 - name: address_region
   title: 都道府県
-- name: postcode
-  title: 郵便番号
-  description: 非推奨。postal_code と同じ値で、のちに削除する
-  semantic: { role: dimension }
 - name: postal_code
   title: 郵便番号
   semantic: { role: entity, name: postal_code }
@@ -75,28 +65,14 @@ fields:
 - name: source_licenses
   title: ライセンス
   description: このレコードに適用されるライセンス。「, 」区切り。Apache-2.0 を含むレコードは Foursquare 由来で、データセットの説明にある NOTICE が適用される
-- name: lat
-  title: 緯度
-  description: 非推奨。latitude と同じ値で、のちに削除する
 - name: latitude
   title: 緯度
-- name: lon
-  title: 経度
-  description: 非推奨。longitude と同じ値で、のちに削除する
 - name: longitude
   title: 経度
-- name: pref_code
-  title: 都道府県コード
-  description: 非推奨。prefecture_code と同じ値で、のちに削除する
-  semantic: { role: dimension }
 - name: prefecture_code
   title: 都道府県コード
   description: 2桁。施設が入る市区町村の都道府県。住所の address_region は多くの行で空なので、都道府県で絞るときはこちらを使う
   semantic: { role: entity, name: prefecture }
-- name: lg_code
-  title: 地方公共団体コード
-  description: 非推奨。local_government_code と同じ値で、のちに削除する
-  semantic: { role: dimension }
 - name: local_government_code
   title: 全国地方公共団体コード
   description: 6桁（検査数字つき）。施設の位置が入る市区町村（divisions.division_area）のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL

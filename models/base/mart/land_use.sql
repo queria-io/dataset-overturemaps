@@ -26,7 +26,7 @@ with land_use as not materialized (
 ),
 
 municipality as (
-    select lg_code, subtype = 'macrohood' as is_ward, geometry
+    select local_government_code as lg_code, subtype = 'macrohood' as is_ward, geometry
     from {{ ref('division_area') }}
     where is_municipality and is_land
 ),
@@ -40,13 +40,9 @@ located as (
 
 select
     land_use.* exclude (point, geometry, release),
-    left(located.lg_code, 2) as pref_code,
     left(located.lg_code, 2) as prefecture_code,
-    located.lg_code,
     located.lg_code as local_government_code,
-    st_x(land_use.point) as lon,
     st_x(land_use.point) as longitude,
-    st_y(land_use.point) as lat,
     st_y(land_use.point) as latitude,
     {{ jis_mesh1('st_x(land_use.point)', 'st_y(land_use.point)') }} as mesh1,
     {{ jis_mesh2('st_x(land_use.point)', 'st_y(land_use.point)') }} as mesh2,

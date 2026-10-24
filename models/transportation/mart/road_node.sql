@@ -4,21 +4,19 @@
 with node as (
     select
         id as gers_id,
-        st_x(geometry) as lon,
-        st_y(geometry) as lat,
+        st_x(geometry) as longitude,
+        st_y(geometry) as latitude,
         geometry
     from {{ ref('raw_connector') }}
 )
 
 select
-    row_number() over (order by {{ jis_mesh2('lon', 'lat') }}, gers_id) as node_id,
+    row_number() over (order by {{ jis_mesh2('longitude', 'latitude') }}, gers_id) as node_id,
     gers_id,
-    lon,
-    lon as longitude,
-    lat,
-    lat as latitude,
-    {{ jis_mesh1('lon', 'lat') }} as mesh1,
-    {{ jis_mesh2('lon', 'lat') }} as mesh2,
+    longitude,
+    latitude,
+    {{ jis_mesh1('longitude', 'latitude') }} as mesh1,
+    {{ jis_mesh2('longitude', 'latitude') }} as mesh2,
     geometry
 from node
 order by node_id
