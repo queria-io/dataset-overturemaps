@@ -10,7 +10,7 @@ Overture の区画は市区町村コードを持たない。dbt のマートで�
 出力:
 - data/divisions/division.parquet（1行 = 1区画、日本の国から字まで）
 - data/divisions/division_area.parquet（1行 = 1ポリゴン）
-- data/divisions/lg_code.parquet（都道府県・市区町村の団体コードと名称）
+- data/divisions/lg_code.parquet（都道府県・市区町村・政令市の区の団体コードと名称）
 
 データソース: Overture Maps Foundation
 https://docs.overturemaps.org/guides/divisions/
