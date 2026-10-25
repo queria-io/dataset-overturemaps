@@ -60,7 +60,7 @@ municipality as (
     select candidate.division_id, lg_code.lg_code
     from candidate
     join lg_code using (prefecture, city)
-    where lg_code.code_type = 'municipality'
+    where lg_code.code_type in ('municipality', 'ward')
     -- 同じ都道府県に同じ名前の市区町村は無いはずだが、あれば付けない
     qualify count(*) over (partition by candidate.division_id) = 1
 ),
