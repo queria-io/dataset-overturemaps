@@ -2,9 +2,19 @@
    位置から、メッシュコード、施設が入る市区町村の地方公共団体コード、施設が入る建物の
    building_id を付ける。市区町村の決め方は buildings.building と同じで、政令市は区を採る。
    結合で raw_place の並びが崩れるので、近い場所の行が同じ行グループに入るよう、最後に
-   ヒルベルト曲線の順に並べ直す。地図の範囲や商圏で絞るクエリが行グループの統計で読み飛ばせる。 #}
+   ヒルベルト曲線の順に並べ直す。地図の範囲や商圏で絞るクエリが行グループの統計で読み飛ばせる。
 
--- located_* と最後の select の 3 か所から読むので、実体化させずに読む側ごとに展開させる
+   同じ施設が複数の行で入っていることがある（日本語名と英語名で別々に登録された店、
+   改名や入れ替わりで前の店の行が残ったもの）。行は消さずに、重複と判定した行には残す側の id を
+   duplicate_of に入れ、件数を数える用途で除く理由を exclude_reason に入れる。
+   判定は次の 2 つのルールだけで、どちらにも当たらない重複は残る。
+   - 電話番号: 正規化した先頭の番号が全国でちょうど 2 行にだけあり、2 行が 100m 以内で
+     basic_category が同じ。百貨店や雑居ビルの代表番号は 3 行以上が持つので当たらない
+   - 名称: 記号と空白を除いて小文字にした名称が同じで 50m 以内。電話番号が両方にあれば同じこと
+   残す側は confidence が高い方、同じなら日本語の名称を持つ方、それも同じなら id の大きい方。
+   全行に順序が付くので、つながった重複の中で一番上の行は必ず残る。 #}
+
+-- keyed・located_* と最後の select の 4 か所から読むので、実体化させずに読む側ごとに展開させる
 with place as not materialized (
     select
         id,
@@ -43,6 +53,83 @@ with place as not materialized (
     from {{ ref('raw_place') }}
 ),
 
+-- 重複の判定に使うキー。place を何度も展開しないよう、ここで一度だけ実体化する
+keyed as materialized (
+    select
+        id,
+        confidence,
+        operating_status,
+        basic_category,
+        latitude,
+        longitude,
+        regexp_matches(name, '[\p{Hiragana}\p{Katakana}\p{Han}]') as has_ja_name,
+        nullif(regexp_replace(lower(name), '[\s\p{P}\p{S}]', '', 'g'), '') as name_key,
+        -- 国番号付き（+81 3-…）と国内表記（03-…）をそろえる
+        nullif(regexp_replace(regexp_replace(split_part(phones, ' ', 1), '[^0-9]', '', 'g'), '^81', '0'), '')
+            as phone_key,
+        -- 名称の突き合わせを近くの行に限るための約 100m の格子
+        floor(latitude * 1000)::bigint as cell_y,
+        floor(longitude * 1000)::bigint as cell_x
+    from place
+),
+
+paired_phone as (
+    select phone_key
+    from keyed
+    where phone_key is not null
+    group by phone_key
+    having count(*) = 2
+),
+
+same_phone as (
+    select a.id, b.id as other_id
+    from keyed as a
+    join keyed as b using (phone_key)
+    semi join paired_phone using (phone_key)
+    where a.id <> b.id
+        and a.basic_category = b.basic_category
+        and st_distance_sphere(st_point(a.latitude, a.longitude), st_point(b.latitude, b.longitude)) < 100
+),
+
+same_name as (
+    -- 隣り合う格子まで見れば 50m 以内は漏れない
+    select a.id, b.id as other_id
+    from keyed as a
+    cross join (values (-1), (0), (1)) as dy(d)
+    cross join (values (-1), (0), (1)) as dx(d)
+    join keyed as b
+        on b.name_key = a.name_key
+        and b.cell_y = a.cell_y + dy.d
+        and b.cell_x = a.cell_x + dx.d
+    where a.id <> b.id
+        and (a.phone_key is null or b.phone_key is null or a.phone_key = b.phone_key)
+        and st_distance_sphere(st_point(a.latitude, a.longitude), st_point(b.latitude, b.longitude)) < 50
+),
+
+duplicate as (
+    select
+        keyed.id,
+        arg_max(other.id, (other.confidence, other.has_ja_name, other.id)) as duplicate_of
+    from (select * from same_phone union select * from same_name) as pair
+    join keyed using (id)
+    join keyed as other on other.id = pair.other_id
+    where (other.confidence, other.has_ja_name, other.id) > (keyed.confidence, keyed.has_ja_name, keyed.id)
+    group by keyed.id
+),
+
+excluded as (
+    select
+        keyed.id,
+        duplicate.duplicate_of,
+        case
+            when keyed.operating_status in ('permanently_closed', 'temporarily_closed') then 'closed'
+            when duplicate.duplicate_of is not null then 'duplicate'
+            when keyed.confidence < 0.5 then 'low_confidence'
+        end as exclude_reason
+    from keyed
+    left join duplicate using (id)
+),
+
 municipality as (
     select local_government_code as lg_code, subtype = 'macrohood' as is_ward, geometry
     from {{ ref('division_area') }}
@@ -72,9 +159,12 @@ select
     {{ jis_mesh1('place.longitude', 'place.latitude') }} as mesh1,
     {{ jis_mesh2('place.longitude', 'place.latitude') }} as mesh2,
     {{ jis_mesh3('place.longitude', 'place.latitude') }} as mesh3,
+    excluded.duplicate_of,
+    excluded.exclude_reason,
     place.geometry,
     place.release
 from place
 left join located_municipality using (id)
 left join located_building using (id)
+left join excluded using (id)
 order by st_hilbert(place.longitude, place.latitude, {'min_x': 122.0, 'min_y': 20.0, 'max_x': 154.5, 'max_y': 46.0}::box_2d)

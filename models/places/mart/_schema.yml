@@ -44,6 +44,17 @@ models:
   - name: longitude
     data_tests:
     - not_null
+  - name: duplicate_of
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('place')
+          field: id
+  - name: exclude_reason
+    data_tests:
+    - accepted_values:
+        arguments:
+          values: [closed, duplicate, low_confidence]
   - name: geometry
   - name: release
     data_tests:
