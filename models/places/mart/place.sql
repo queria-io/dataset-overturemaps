@@ -1,6 +1,8 @@
 {# raw_place の入れ子の列を平坦化した日本の POI。列の選び方は place.table.yml。
    位置から、メッシュコード、施設が入る市区町村の地方公共団体コード、施設が入る建物の
-   building_id を付ける。市区町村の決め方は buildings.building と同じで、政令市は区を採る。 #}
+   building_id を付ける。市区町村の決め方は buildings.building と同じで、政令市は区を採る。
+   結合で raw_place の並びが崩れるので、近い場所の行が同じ行グループに入るよう、最後に
+   ヒルベルト曲線の順に並べ直す。地図の範囲や商圏で絞るクエリが行グループの統計で読み飛ばせる。 #}
 
 -- located_* と最後の select の 3 か所から読むので、実体化させずに読む側ごとに展開させる
 with place as not materialized (
@@ -75,3 +77,4 @@ select
 from place
 left join located_municipality using (id)
 left join located_building using (id)
+order by st_hilbert(place.longitude, place.latitude, {'min_x': 122.0, 'min_y': 20.0, 'max_x': 154.5, 'max_y': 46.0}::box_2d)
