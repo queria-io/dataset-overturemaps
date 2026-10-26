@@ -48,3 +48,19 @@ models:
   - name: release
     data_tests:
     - not_null
+- name: category
+  description: places.place の Overture Maps の分類から日本標準産業分類と OpenStreetMap のタグへの対応表。
+  access: public
+  columns:
+  - name: basic_category
+    data_tests: [not_null]
+  - name: taxonomy_primary
+  - name: industry_major_code
+    data_tests:
+    - accepted_values:
+        arguments:
+          values: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
+  - name: industry_code
+  - name: osm_tag
+  - name: is_unattended
+    data_tests: [not_null]

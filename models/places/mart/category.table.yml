@@ -1,0 +1,36 @@
+schema: places
+name: category
+title: Overture Maps の施設の分類と産業分類の対応表
+description: places.place の Overture Maps の分類（basic_category・taxonomy_primary）を、日本標準産業分類（第14回改定）の大分類・中分類、OpenStreetMap のタグ、無人の設備かに対応させた表。Queria が分類の名前と中身から手で当てたもので、公式の対応ではない。1行が basic_category ごとの既定の行（taxonomy_primary が NULL）か、その中で行き先の違う taxonomy_primary の行（パン屋は飲食店でなく飲食料品小売業、郵便局は複合サービス事業、など）。place に当てるときは、basic_category と taxonomy_primary の両方が合う行があればそちらを採り、無ければ既定の行を採る。taxonomy_primary の行の空の値は既定の行を打ち消す（ATM の産業分類を空にするなど）。産業分類の名前は e_stat の code.industry にある。正本はリポジトリの reference/places/category.csv。
+keywords:
+- POI
+- 施設
+- 店舗
+- 産業分類
+- 対応表
+- OpenStreetMap
+- Overture Maps
+published: true
+themes: [commerce_services]
+sources:
+- path: https://docs.overturemaps.org/guides/places/
+- path: https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/R05index.htm
+fields:
+- name: basic_category
+  title: Overture の基本分類
+  description: place の basic_category と同じ値
+- name: taxonomy_primary
+  title: Overture の詳細分類
+  description: place の taxonomy_primary と同じ値。NULL の行はその basic_category の既定の行
+- name: industry_major_code
+  title: 産業大分類コード
+  description: 日本標準産業分類（第14回改定）の大分類（A〜T の1文字）。名前は e_stat の code.industry（revision = 2023、level = 'major'）を code で引く。山・川・公園・ATM・駐車場のように事業所でないものと、分類の粗さで当てられないもの（basic_category が travel_and_transportation など）は NULL
+- name: industry_code
+  title: 産業中分類コード
+  description: 日本標準産業分類（第14回改定）の中分類（2桁）。名前は e_stat の code.industry（revision = 2023、level = 'middle'）を code で引く。大分類までしか当てられないもの（製造業）は NULL。Overture の分類は事業所の業態を名前と提供元から推定したもので、統計調査の格付けとは一致しないことがある
+- name: osm_tag
+  title: OpenStreetMap のタグ
+  description: 施設の種類に当たる OpenStreetMap の主なタグ（amenity=restaurant、shop=convenience など）を「キー=値」で1つ。alltheplaces.places.place など OpenStreetMap のタグで分類する施設のデータと突き合わせるのに使う。当てられないものは NULL
+- name: is_unattended
+  title: 無人の設備か
+  description: ATM・自動販売機・宅配ロッカー・駐車場・公衆トイレ・EV 充電器など、人のいない設備なら true。店舗として数えるときは false の分類に絞る
