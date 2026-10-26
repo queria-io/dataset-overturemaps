@@ -12,7 +12,7 @@
      basic_category が同じ。百貨店や雑居ビルの代表番号は 3 行以上が持つので当たらない
    - 名称: 記号と空白を除いて小文字にした名称が同じで 50m 以内。電話番号が両方にあれば同じこと
    残す側は confidence が高い方、同じなら日本語の名称を持つ方、それも同じなら id の大きい方。
-   全行に順序が付くので、つながった重複の中で一番上の行は必ず残る。 #}
+   全行に順序が付くので、つながった重複の中で一番上の行は必ず残る。duplicate_of はその残る行を指す。 #}
 
 -- keyed・located_* と最後の select の 4 か所から読むので、実体化させずに読む側ごとに展開させる
 with place as not materialized (
@@ -73,6 +73,12 @@ keyed as materialized (
     from place
 ),
 
+ranked as (
+    -- 残す側の順。confidence、日本語の名称を持つか、id の順に比べる
+    select *, (confidence, has_ja_name, id) as keep_rank
+    from keyed
+),
+
 paired_phone as (
     select phone_key
     from keyed
@@ -82,9 +88,9 @@ paired_phone as (
 ),
 
 same_phone as (
-    select a.id, b.id as other_id
-    from keyed as a
-    join keyed as b using (phone_key)
+    select a.id, a.keep_rank, b.id as other_id, b.keep_rank as other_rank
+    from ranked as a
+    join ranked as b using (phone_key)
     semi join paired_phone using (phone_key)
     where a.id <> b.id
         and a.basic_category = b.basic_category
@@ -93,11 +99,11 @@ same_phone as (
 
 same_name as (
     -- 隣り合う格子まで見れば 50m 以内は漏れない
-    select a.id, b.id as other_id
-    from keyed as a
+    select a.id, a.keep_rank, b.id as other_id, b.keep_rank as other_rank
+    from ranked as a
     cross join (values (-1), (0), (1)) as dy(d)
     cross join (values (-1), (0), (1)) as dx(d)
-    join keyed as b
+    join ranked as b
         on b.name_key = a.name_key
         and b.cell_y = a.cell_y + dy.d
         and b.cell_x = a.cell_x + dx.d
@@ -106,15 +112,24 @@ same_name as (
         and st_distance_sphere(st_point(a.latitude, a.longitude), st_point(b.latitude, b.longitude)) < 50
 ),
 
+-- 順位を組の側に持たせて結合せずに選ぶ。keyed と結合して比べると、オプティマイザが
+-- keyed 同士の不等号結合を先に組み、全国では終わらない
+nearest_keeper as (
+    select id, arg_max(other_id, other_rank) as duplicate_of
+    from (select * from same_phone union select * from same_name) as pair
+    where other_rank > keep_rank
+    group by id
+),
+
+-- 選んだ行がさらに別の行の重複のことがある（電話番号の無い行が同名の行に付き、その行が
+-- 電話番号で別の行に付くなど）。残す側を直接指すよう、3 段まで先へたどる
 duplicate as (
     select
-        keyed.id,
-        arg_max(other.id, (other.confidence, other.has_ja_name, other.id)) as duplicate_of
-    from (select * from same_phone union select * from same_name) as pair
-    join keyed using (id)
-    join keyed as other on other.id = pair.other_id
-    where (other.confidence, other.has_ja_name, other.id) > (keyed.confidence, keyed.has_ja_name, keyed.id)
-    group by keyed.id
+        n1.id,
+        coalesce(n3.duplicate_of, n2.duplicate_of, n1.duplicate_of) as duplicate_of
+    from nearest_keeper as n1
+    left join nearest_keeper as n2 on n2.id = n1.duplicate_of
+    left join nearest_keeper as n3 on n3.id = n2.duplicate_of
 ),
 
 excluded as (
