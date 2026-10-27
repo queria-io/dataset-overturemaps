@@ -18,9 +18,11 @@ models:
   overturemaps:
     +database: overturemaps
     places:
-      # 行グループを 2 万行にする。位置の順に並べても、既定の 12 万行ごとでは 1 つの行グループが
-      # 広い範囲にまたがり、地図の中心から 5km の検索でも 25 個中 7 個を読んでいた (2026-10)
-      +pre-hook: "CALL overturemaps.set_option('parquet_row_group_size', 20000, schema => 'places')"
+      # 行グループを 8,192 行にする。位置の順に並べても、既定の 12 万行ごとでは 1 つの行グループが
+      # 広い範囲にまたがり、地図の中心から 5km の検索でも 25 個中 7 個を読んでいた。商圏の分析
+      # (東京駅 1km) で 4,096・8,192・16,384 行を実測し、8,192 行が往復も読む量も少なかった (2026-10)。
+      # 設定はスキーマに付く (dbt は __dbt_tmp に書いてから改名するので、テーブルに付けても効かない)
+      +pre-hook: "CALL overturemaps.set_option('parquet_row_group_size', 8192, schema => 'places')"
       raw:
         +materialized: table
       # mart も実体化する。view だと st_x / st_y が読むたびに評価され、spatial 拡張を
