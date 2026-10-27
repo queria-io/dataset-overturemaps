@@ -1,7 +1,7 @@
 schema: places
 name: place
 title: 日本の POI
-description: Overture Maps places テーマのうち、住所の国コードが JP の施設。1行が1施設で、店舗・飲食店・医療機関・宿泊施設・公園・寺社などを含む。複数の提供元が同じ施設を持つ場合、Overture が1件にまとめたうえで配布している。営業状態（operating_status）はほとんどのレコードで空なので、閉店した施設を除く用途には使えない。位置から地方公共団体コード（政令市は区）・メッシュコード（1〜3 次）と、施設が入る建物の building_id を付けたので、市区町村コードやメッシュを持つ他のデータセット、buildings.building と結合できる。
+description: Overture Maps places テーマのうち、住所の国コードが JP の施設。1行が1施設で、店舗・飲食店・医療機関・宿泊施設・公園・寺社などを含む。複数の提供元が同じ施設を持つ場合、Overture が1件にまとめたうえで配布している。営業状態（operating_status）はほとんどのレコードで空なので、閉店した施設を除く用途には使えない。同じ施設が日本語名と英語名で別々に入っていたり、改名や入れ替わりで前の店の行が残っていたりするので、件数を数えるときは exclude_reason が NULL の行に絞る。重複の判定は電話番号と名称の一致だけで、当たらない重複は残る。位置から地方公共団体コード（政令市は区）・メッシュコード（1〜3 次）と、施設が入る建物の building_id を付けたので、市区町村コードやメッシュを持つ他のデータセット、buildings.building と結合できる。
 keywords:
 - POI
 - 施設
@@ -93,6 +93,12 @@ fields:
   title: 3 次メッシュコード
   description: 施設の位置が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）
   semantic: { role: entity, name: mesh }
+- name: duplicate_of
+  title: 重複先の GERS ID
+  description: 同じ施設の別の行と判定したとき、残す側の行の id。判定は 2 つ。正規化した先頭の電話番号が全国で 2 行にだけあり、100m 以内で basic_category が同じもの。記号と空白を除いた名称が同じで 50m 以内、電話番号が両方にあれば同じもの。残す側は閉店・休業でない方、同じなら confidence が高い方、それも同じなら日本語の名称を持つ方。重複でなければ NULL
+- name: exclude_reason
+  title: 除く理由
+  description: 施設を数えるときに除く理由。closed（operating_status が閉店・休業）、duplicate（duplicate_of が入っている）、low_confidence（confidence が 0.5 未満。撤退した店を多く含む）。複数当たるときはこの順で先のもの。除く理由が無ければ NULL
 - name: geometry
   title: ジオメトリ
   description: 施設の位置を表す POINT
