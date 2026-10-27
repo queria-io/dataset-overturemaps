@@ -18,6 +18,9 @@ models:
   overturemaps:
     +database: overturemaps
     places:
+      # 行グループを 2 万行にする。位置の順に並べても、既定の 12 万行ごとでは 1 つの行グループが
+      # 広い範囲にまたがり、地図の中心から 5km の検索でも 25 個中 7 個を読んでいた (2026-10)
+      +pre-hook: "CALL overturemaps.set_option('parquet_row_group_size', 20000, schema => 'places')"
       raw:
         +materialized: table
       # mart も実体化する。view だと st_x / st_y が読むたびに評価され、spatial 拡張を
