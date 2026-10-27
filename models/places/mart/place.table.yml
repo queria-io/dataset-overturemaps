@@ -95,10 +95,10 @@ fields:
   semantic: { role: entity, name: mesh }
 - name: duplicate_of
   title: 重複先の GERS ID
-  description: 同じ施設の別の行と判定したとき、残す側の行の id。判定は 2 つ。正規化した先頭の電話番号が全国で 2 行にだけあり、100m 以内で basic_category が同じもの。記号と空白を除いた名称が同じで 50m 以内、電話番号が両方にあれば同じもの。残す側は confidence が高い方、同じなら日本語の名称を持つ方。重複でなければ NULL
+  description: 同じ施設の別の行と判定したとき、残す側の行の id。判定は 2 つ。正規化した先頭の電話番号が全国で 2 行にだけあり、100m 以内で basic_category が同じもの。記号と空白を除いた名称が同じで 50m 以内、電話番号が両方にあれば同じもの。残す側は閉店・休業でない方、同じなら confidence が高い方、それも同じなら日本語の名称を持つ方。重複でなければ NULL
 - name: exclude_reason
   title: 除く理由
-  description: 施設を数えるときに除く理由。closed（operating_status が閉店・休業）、duplicate（duplicate_of が入っている）、low_confidence（confidence が 0.5 未満。撤退した店を多く含む）。複数当たるときは この順で先のもの。除く理由が無ければ NULL
+  description: 施設を数えるときに除く理由。closed（operating_status が閉店・休業）、duplicate（duplicate_of が入っている）、low_confidence（confidence が 0.5 未満。撤退した店を多く含む）。複数当たるときはこの順で先のもの。除く理由が無ければ NULL
 - name: geometry
   title: ジオメトリ
   description: 施設の位置を表す POINT

@@ -11,7 +11,8 @@
    - 電話番号: 正規化した先頭の番号が全国でちょうど 2 行にだけあり、2 行が 100m 以内で
      basic_category が同じ。百貨店や雑居ビルの代表番号は 3 行以上が持つので当たらない
    - 名称: 記号と空白を除いて小文字にした名称が同じで 50m 以内。電話番号が両方にあれば同じこと
-   残す側は confidence が高い方、同じなら日本語の名称を持つ方、それも同じなら id の大きい方。
+   残す側は閉店・休業でない方、同じなら confidence が高い方、同じなら日本語の名称を持つ方、
+   それも同じなら id の大きい方。営業中の行が閉店した行に付いて両方とも数から落ちないよう、営業状態を先に比べる。
    全行に順序が付くので、つながった重複の中で一番上の行は必ず残る。duplicate_of はその残る行を指す。 #}
 
 -- keyed・located_* と最後の select の 4 か所から読むので、実体化させずに読む側ごとに展開させる
@@ -41,6 +42,8 @@ with place as not materialized (
         addresses[1].region as address_region,
         addresses[1].postcode as postal_code,
         array_to_string(phones, ' ') as phones,
+        -- 重複の判定にだけ使う。1 つの番号の中にも空白がある（+81 3-…）ので、つないだ phones からは切り出せない
+        phones[1] as first_phone,
         array_to_string(websites, ' ') as websites,
         array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.dataset))), ', ')
             as source_datasets,
@@ -58,14 +61,14 @@ keyed as materialized (
     select
         id,
         confidence,
-        operating_status,
+        operating_status in ('permanently_closed', 'temporarily_closed') as is_closed,
         basic_category,
         latitude,
         longitude,
         regexp_matches(name, '[\p{Hiragana}\p{Katakana}\p{Han}]') as has_ja_name,
-        nullif(regexp_replace(lower(name), '[\s\p{P}\p{S}]', '', 'g'), '') as name_key,
+        nullif(regexp_replace(lower(name), '[\s\p{Z}\p{P}\p{S}]', '', 'g'), '') as name_key,
         -- 国番号付き（+81 3-…）と国内表記（03-…）をそろえる
-        nullif(regexp_replace(regexp_replace(split_part(phones, ' ', 1), '[^0-9]', '', 'g'), '^81', '0'), '')
+        nullif(regexp_replace(regexp_replace(first_phone, '[^0-9]', '', 'g'), '^81', '0'), '')
             as phone_key,
         -- 名称の突き合わせを近くの行に限るための約 100m の格子
         floor(latitude * 1000)::bigint as cell_y,
@@ -74,8 +77,8 @@ keyed as materialized (
 ),
 
 ranked as (
-    -- 残す側の順。confidence、日本語の名称を持つか、id の順に比べる
-    select *, (confidence, has_ja_name, id) as keep_rank
+    -- 残す側の順。閉店・休業でないか、confidence、日本語の名称を持つか、id の順に比べる
+    select *, (not coalesce(is_closed, false), confidence, has_ja_name, id) as keep_rank
     from keyed
 ),
 
@@ -87,11 +90,17 @@ paired_phone as (
     having count(*) = 2
 ),
 
+-- 代表番号のように多くの行が持つ番号で自己結合が膨らまないよう、先に 2 行だけの番号に絞る
+phone_candidate as (
+    select *
+    from ranked
+    semi join paired_phone using (phone_key)
+),
+
 same_phone as (
     select a.id, a.keep_rank, b.id as other_id, b.keep_rank as other_rank
-    from ranked as a
-    join ranked as b using (phone_key)
-    semi join paired_phone using (phone_key)
+    from phone_candidate as a
+    join phone_candidate as b using (phone_key)
     where a.id <> b.id
         and a.basic_category = b.basic_category
         and st_distance_sphere(st_point(a.latitude, a.longitude), st_point(b.latitude, b.longitude)) < 100
@@ -116,7 +125,7 @@ same_name as (
 -- keyed 同士の不等号結合を先に組み、全国では終わらない
 nearest_keeper as (
     select id, arg_max(other_id, other_rank) as duplicate_of
-    from (select * from same_phone union select * from same_name) as pair
+    from (select * from same_phone union all select * from same_name) as pair
     where other_rank > keep_rank
     group by id
 ),
@@ -137,7 +146,7 @@ excluded as (
         keyed.id,
         duplicate.duplicate_of,
         case
-            when keyed.operating_status in ('permanently_closed', 'temporarily_closed') then 'closed'
+            when keyed.is_closed then 'closed'
             when duplicate.duplicate_of is not null then 'duplicate'
             when keyed.confidence < 0.5 then 'low_confidence'
         end as exclude_reason
@@ -167,7 +176,7 @@ located_building as (
 )
 
 select
-    place.* exclude (geometry, release),
+    place.* exclude (first_phone, geometry, release),
     left(located_municipality.lg_code, 2) as prefecture_code,
     located_municipality.lg_code as local_government_code,
     located_building.building_id,
