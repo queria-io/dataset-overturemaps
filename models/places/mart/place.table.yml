@@ -13,30 +13,46 @@ themes: [commerce_services]
 sources:
 - path: https://docs.overturemaps.org/guides/places/
 fields:
-- name: id
-  title: GERS ID
-  description: Overture が施設に振る ID。リリースをまたいでも同じ施設には同じ ID が付くので、前のリリースとの差分を取るときのキーになる
-- name: name
-  title: 名称
-  description: 提供元が登録した主たる名称。日本語とは限らない
-- name: name_ja
-  title: 名称（日本語）
-  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち ja。無ければ NULL
-- name: name_en
-  title: 名称（英語）
-  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち en。無ければ NULL
+- name: longitude
+  title: 経度
+- name: latitude
+  title: 緯度
+- name: confidence
+  title: 確からしさ
+  description: その施設が実在する確からしさを Overture が 0〜1 で推定した値
 - name: basic_category
   title: 基本カテゴリ
   description: Overture が付ける大まかなカテゴリ（restaurant / cafe / convenience_store / hospital など）
 - name: taxonomy_primary
   title: カテゴリ
   description: Overture の分類体系での主カテゴリ。basic_category より細かい
+- name: name
+  title: 名称
+  description: 提供元が登録した主たる名称。日本語とは限らない
+- name: name_ja
+  title: 名称（日本語）
+  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち ja。無ければ NULL
+- name: address
+  title: 住所
+  description: 提供元が登録した住所の文字列。表記は提供元によって揃っていない
+- name: phones
+  title: 電話番号
+  description: 複数ある場合は半角スペース区切り
+- name: websites
+  title: Web サイト
+  description: 複数ある場合は半角スペース区切り
+- name: release
+  title: リリース
+  description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
+- name: id
+  title: GERS ID
+  description: Overture が施設に振る ID。リリースをまたいでも同じ施設には同じ ID が付くので、前のリリースとの差分を取るときのキーになる
+- name: name_en
+  title: 名称（英語）
+  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち en。無ければ NULL
 - name: taxonomy_hierarchy
   title: カテゴリの階層
   description: 主カテゴリを最上位から並べたもの。「 > 」区切り
-- name: confidence
-  title: 確からしさ
-  description: その施設が実在する確からしさを Overture が 0〜1 で推定した値
 - name: operating_status
   title: 営業状態
   description: open / permanently_closed / temporarily_closed。ほとんどのレコードで NULL
@@ -44,9 +60,6 @@ fields:
   title: ブランド名
 - name: brand_wikidata
   title: ブランドの Wikidata ID
-- name: address
-  title: 住所
-  description: 提供元が登録した住所の文字列。表記は提供元によって揃っていない
 - name: address_locality
   title: 市区町村
 - name: address_region
@@ -54,22 +67,12 @@ fields:
 - name: postal_code
   title: 郵便番号
   semantic: { role: entity, name: postal_code }
-- name: phones
-  title: 電話番号
-  description: 複数ある場合は半角スペース区切り
-- name: websites
-  title: Web サイト
-  description: 複数ある場合は半角スペース区切り
 - name: source_datasets
   title: 提供元
   description: このレコードの属性を提供したデータセット名（meta / Foursquare / Microsoft / AllThePlaces など）。「, 」区切り。Overture は全レコードに含まれる
 - name: source_licenses
   title: ライセンス
   description: このレコードに適用されるライセンス。「, 」区切り。Apache-2.0 を含むレコードは Foursquare 由来で、データセットの説明にある NOTICE が適用される
-- name: latitude
-  title: 緯度
-- name: longitude
-  title: 経度
 - name: prefecture_code
   title: 都道府県コード
   description: 2桁。施設が入る市区町村の都道府県。住所の address_region は多くの行で空なので、都道府県で絞るときはこちらを使う
@@ -102,6 +105,3 @@ fields:
 - name: geometry
   title: ジオメトリ
   description: 施設の位置を表す POINT
-- name: release
-  title: リリース
-  description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
