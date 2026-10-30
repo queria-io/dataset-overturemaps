@@ -17,6 +17,12 @@ fields:
   title: 経度
 - name: latitude
   title: 緯度
+- name: name
+  title: 名称
+  description: 提供元が登録した主たる名称。日本語とは限らない
+- name: address
+  title: 住所
+  description: 提供元が登録した住所の文字列。表記は提供元によって揃っていない
 - name: confidence
   title: 確からしさ
   description: その施設が実在する確からしさを Overture が 0〜1 で推定した値
@@ -26,15 +32,9 @@ fields:
 - name: taxonomy_primary
   title: カテゴリ
   description: Overture の分類体系での主カテゴリ。basic_category より細かい
-- name: name
-  title: 名称
-  description: 提供元が登録した主たる名称。日本語とは限らない
 - name: name_ja
   title: 名称（日本語）
   description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち ja。無ければ NULL
-- name: address
-  title: 住所
-  description: 提供元が登録した住所の文字列。表記は提供元によって揃っていない
 - name: phones
   title: 電話番号
   description: 複数ある場合は半角スペース区切り

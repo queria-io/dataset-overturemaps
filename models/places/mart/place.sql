@@ -177,23 +177,25 @@ located_building as (
 )
 
 select
-    -- 商圏の店舗 (経緯度・confidence・分類で絞り、名称・住所・電話・Web を出す) と施設名の検索
-    -- (名称・住所・経緯度) が読む列を先頭に並べる。ブラウザの DuckDB は飛んだ位置を読むたびに
-    -- 小さな読み込みからやり直すので、読む列が行グループの中で続いていると往復が減る
+    -- 施設名の検索が読む列 (経緯度・名称・住所) を先頭に、続けて商圏の店舗が読む残りの列
+    -- (confidence・分類・日本語の名称・電話・Web・release、重なりを畳む順の id) を並べる。
+    -- ブラウザの DuckDB は飛んだ位置を読むたびに小さな読み込みからやり直すので、
+    -- どちらの読み出しでも読む列が行グループの中で続いていると往復が減る
     place.longitude,
     place.latitude,
+    place.name,
+    place.address,
     place.confidence,
     place.basic_category,
     place.taxonomy_primary,
-    place.name,
     place.name_ja,
-    place.address,
     place.phones,
     place.websites,
     place.release,
+    place.id,
     place.* exclude (
-        longitude, latitude, confidence, basic_category, taxonomy_primary, name, name_ja,
-        address, phones, websites, release, first_phone, geometry
+        longitude, latitude, name, address, confidence, basic_category, taxonomy_primary,
+        name_ja, phones, websites, release, id, first_phone, geometry
     ),
     left(located_municipality.lg_code, 2) as prefecture_code,
     located_municipality.lg_code as local_government_code,
