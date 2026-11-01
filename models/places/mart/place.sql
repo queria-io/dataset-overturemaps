@@ -177,7 +177,26 @@ located_building as (
 )
 
 select
-    place.* exclude (first_phone, geometry, release),
+    -- 施設名の検索が読む列 (経緯度・名称・住所) を先頭に、続けて商圏の店舗が読む残りの列
+    -- (confidence・分類・日本語の名称・電話・Web・release、重なりを畳む順の id) を並べる。
+    -- ブラウザの DuckDB は飛んだ位置を読むたびに小さな読み込みからやり直すので、
+    -- どちらの読み出しでも読む列が行グループの中で続いていると往復が減る
+    place.longitude,
+    place.latitude,
+    place.name,
+    place.address,
+    place.confidence,
+    place.basic_category,
+    place.taxonomy_primary,
+    place.name_ja,
+    place.phones,
+    place.websites,
+    place.release,
+    place.id,
+    place.* exclude (
+        longitude, latitude, name, address, confidence, basic_category, taxonomy_primary,
+        name_ja, phones, websites, release, id, first_phone, geometry
+    ),
     left(located_municipality.lg_code, 2) as prefecture_code,
     located_municipality.lg_code as local_government_code,
     located_building.building_id,
@@ -186,8 +205,7 @@ select
     {{ jis_mesh3('place.longitude', 'place.latitude') }} as mesh3,
     excluded.duplicate_of,
     excluded.exclude_reason,
-    place.geometry,
-    place.release
+    place.geometry
 from place
 left join located_municipality using (id)
 left join located_building using (id)
