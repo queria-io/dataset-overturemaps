@@ -8,8 +8,7 @@ keywords:
 - 店舗
 - 飲食店
 - GIS
-published: true
-themes: [commerce_services]
+annotations: { queria: { themes: [commerce_services] } }
 sources:
 - path: https://docs.overturemaps.org/guides/places/
 fields:
@@ -66,7 +65,7 @@ fields:
   title: 都道府県
 - name: postal_code
   title: 郵便番号
-  semantic: { role: entity, name: postal_code }
+  annotations: { queria: { semantic: { role: entity, name: postal_code } } }
 - name: source_datasets
   title: 提供元
   description: このレコードの属性を提供したデータセット名（meta / Foursquare / Microsoft / AllThePlaces など）。「, 」区切り。Overture は全レコードに含まれる
@@ -76,26 +75,26 @@ fields:
 - name: prefecture_code
   title: 都道府県コード
   description: 2桁。施設が入る市区町村の都道府県。住所の address_region は多くの行で空なので、都道府県で絞るときはこちらを使う
-  semantic: { role: entity, name: prefecture }
+  annotations: { queria: { semantic: { role: entity, name: prefecture } } }
 - name: local_government_code
   title: 全国地方公共団体コード
   description: 6桁（検査数字つき）。施設の位置が入る市区町村（divisions.division_area）のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
-  semantic: { role: entity, name: city }
+  annotations: { queria: { semantic: { role: entity, name: city } } }
 - name: building_id
   title: 建物の GERS ID
   description: 施設の位置が入る建物（buildings.building）の building_id。外形が重なる建物では小さい方。建物の外にある施設や、外形の無い建物の中の施設は NULL
 - name: mesh1
   title: 1 次メッシュコード
   description: 施設の位置が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: mesh2
   title: 2 次メッシュコード
   description: 施設の位置が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: mesh3
   title: 3 次メッシュコード
   description: 施設の位置が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: duplicate_of
   title: 重複先の GERS ID
   description: 同じ施設の別の行と判定したとき、残す側の行の id。判定は 2 つ。正規化した先頭の電話番号が全国で 2 行にだけあり、100m 以内で basic_category が同じもの。記号と空白を除いた名称が同じで 50m 以内、電話番号が両方にあれば同じもの。残す側は閉店・休業でない方、同じなら confidence が高い方、それも同じなら日本語の名称を持つ方。重複でなければ NULL

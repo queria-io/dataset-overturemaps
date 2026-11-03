@@ -6,7 +6,6 @@ keywords:
 - 建物
 - GIS
 - Overture Maps
-published: true
-themes: [housing_land]
+annotations: { queria: { themes: [housing_land] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/buildings/building/

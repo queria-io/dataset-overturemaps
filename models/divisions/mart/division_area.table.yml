@@ -9,8 +9,7 @@ keywords:
 - ポリゴン
 - 地方公共団体コード
 - GIS
-published: true
-themes: [land_climate]
+annotations: { queria: { themes: [land_climate] } }
 sources:
 - path: https://docs.overturemaps.org/guides/divisions/
 fields:
@@ -33,11 +32,11 @@ fields:
 - name: prefecture_code
   title: 都道府県コード
   description: 2桁
-  semantic: { role: entity, name: prefecture }
+  annotations: { queria: { semantic: { role: entity, name: prefecture } } }
 - name: local_government_code
   title: 全国地方公共団体コード
   description: 6桁（検査数字つき）。divisions.division の local_government_code と同じ
-  semantic: { role: entity, name: city }
+  annotations: { queria: { semantic: { role: entity, name: city } } }
 - name: is_municipality
   title: 市区町村そのものか
   description: divisions.division の is_municipality と同じ

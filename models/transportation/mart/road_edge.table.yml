@@ -10,8 +10,7 @@ keywords:
 - 商圏
 - 一方通行
 - GIS
-published: true
-themes: [transport_tourism]
+annotations: { queria: { themes: [transport_tourism] } }
 sources:
 - path: https://docs.overturemaps.org/guides/transportation/
 fields:
@@ -57,11 +56,11 @@ fields:
 - name: mesh1
   title: 1 次メッシュコード
   description: 線の中点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: mesh2
   title: 2 次メッシュコード
   description: 線の中点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。メッシュをまたぐ線は中点の側に入るので、境界付近の経路を出すときは隣のメッシュも読む
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: gers_id
   title: 元の区間の GERS ID
   description: 区切る前の Overture の区間の ID。transportation.raw_segment の id
