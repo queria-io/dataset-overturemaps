@@ -8,7 +8,6 @@ keywords:
 - GIS
 - Overture Maps
 - OpenStreetMap
-published: true
-themes: [transport_tourism]
+annotations: { queria: { themes: [transport_tourism] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/transportation/segment/

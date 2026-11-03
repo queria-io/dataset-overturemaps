@@ -9,8 +9,7 @@ keywords:
 - 経路
 - 到達圏
 - GIS
-published: true
-themes: [transport_tourism]
+annotations: { queria: { themes: [transport_tourism] } }
 sources:
 - path: https://docs.overturemaps.org/guides/transportation/
 fields:
@@ -27,11 +26,11 @@ fields:
 - name: mesh1
   title: 1 次メッシュコード
   description: 節点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: mesh2
   title: 2 次メッシュコード
   description: 節点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。行はこの順に並んでいるので、メッシュで絞ると必要な部分だけを読む
-  semantic: { role: entity, name: mesh }
+  annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: geometry
   title: ジオメトリ
   description: 節点の位置を表す POINT

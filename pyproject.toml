@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "queria>=0.23.0",
+    "fdl-cli>=0.18.1",
     "dbt-core>=1.11.2",
     "dbt-duckdb>=1.10.0",
 ]

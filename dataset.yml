@@ -1,4 +1,6 @@
-spec_version: "0.1"
+# この dataset.yml は fdl commit が読む（FDL の dataset.json を YAML で書いたもの）。
+# 表の説明は models/ の *.table.yml に書く。表と列の型・NULL・行数は fdl commit がカタログから埋める。
+# Queria だけの項目（テーマ・カバー・列の意味）は annotations.queria に書く。
 name: overturemaps
 title: Overture Maps
 description: |-
@@ -51,7 +53,6 @@ keywords:
   - Foursquare
 homepage: https://github.com/queria-io/dataset-overturemaps
 language: ja
-themes: [land_climate, housing_land, transport_tourism, commerce_services]
 
 licenses:
   - id: CDLA-Permissive-2.0
@@ -121,7 +122,6 @@ contributors:
 
 spatial_coverage: [JP]
 update_frequency: monthly
-cover: 📍
 
 schemas:
   - name: places
@@ -134,3 +134,8 @@ schemas:
     title: 建物
   - name: base
     title: 設備・土地利用
+
+annotations:
+  queria:
+    themes: [land_climate, housing_land, transport_tourism, commerce_services]
+    cover: 📍

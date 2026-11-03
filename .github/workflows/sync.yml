@@ -19,6 +19,10 @@ jobs:
     uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
     with:
       dataset_name: overturemaps
-      # 建物（約 5,400 万棟）の取り出しとビルドが加わり、既定の 90 分では足りない見込み
-      timeout_minutes: 150
+      # 建物（約 5,400 万棟）の取り出しとビルドが加わり、既定の 90 分では足りない。
+      # fdl になってからは、ビルドの後に約 25GB を data.queria.io へ上げる時間が加わる
+      timeout_minutes: 180
+      # fdl は上げる前に新しいデータファイル (約 25GB) を手元に書く。取り出した
+      # data/ (約 12GB) と合わせるとランナーの空きを超えるので、先に空ける
+      free_disk: true
     secrets: inherit

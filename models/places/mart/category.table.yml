@@ -10,8 +10,7 @@ keywords:
 - 対応表
 - OpenStreetMap
 - Overture Maps
-published: true
-themes: [commerce_services]
+annotations: { queria: { themes: [commerce_services] } }
 sources:
 - path: https://docs.overturemaps.org/guides/places/
 - path: https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/R05index.htm
