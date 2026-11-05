@@ -6,6 +6,6 @@ keywords:
 - 土地利用
 - GIS
 - Overture Maps
-annotations: { queria: { themes: [land_climate] } }
+annotations: { queria: { published: false, themes: [land_climate] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/base/land_use/
