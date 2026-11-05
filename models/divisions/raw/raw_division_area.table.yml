@@ -8,6 +8,6 @@ keywords:
 - 境界
 - GIS
 - Overture Maps
-annotations: { queria: { themes: [land_climate] } }
+annotations: { queria: { published: false, themes: [land_climate] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/divisions/division_area/

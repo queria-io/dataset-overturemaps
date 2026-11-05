@@ -7,6 +7,6 @@ keywords:
 - 施設
 - GIS
 - Overture Maps
-annotations: { queria: { themes: [commerce_services] } }
+annotations: { queria: { published: false, themes: [commerce_services] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/places/place/

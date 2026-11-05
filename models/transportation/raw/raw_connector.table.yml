@@ -7,6 +7,6 @@ keywords:
 - 交差点
 - GIS
 - Overture Maps
-annotations: { queria: { themes: [transport_tourism] } }
+annotations: { queria: { published: false, themes: [transport_tourism] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/transportation/connector/
