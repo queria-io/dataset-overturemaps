@@ -1,7 +1,10 @@
 schema: divisions
 name: division_area
 title: 日本の行政区画のポリゴン
-description: Overture Maps divisions テーマの日本の区画のポリゴン。1行が1ポリゴンで、division_id が divisions.division の区画を指し、その名称と地方公共団体コードを持つ。地図上の点（POI・建物・住所）がどの市区町村・町丁に入るかを st_contains で引くのに使う。陸地だけの形（is_land）と領海を含む形（is_territorial）が別の行になることがあるので、点を当てるときはどちらかに絞る。
+description: |-
+  Overture Maps divisions テーマの日本の区画のポリゴンです。1 行が 1 ポリゴンで、区画の名称と地方公共団体コードを持ちます。
+
+  - 陸地だけの形（is_land）と領海を含む形（is_territorial）が別の行になることがあります。点を当てるときはどちらかに絞ってください
 keywords:
 - 行政区画
 - 市区町村
@@ -35,7 +38,7 @@ fields:
   annotations: { queria: { semantic: { role: entity, name: prefecture } } }
 - name: local_government_code
   title: 全国地方公共団体コード
-  description: 6桁（検査数字つき）。divisions.division の local_government_code と同じ
+  description: 6 桁。division の local_government_code と同じ
   annotations: { queria: { semantic: { role: entity, name: city } } }
 - name: is_municipality
   title: 市区町村そのものか
