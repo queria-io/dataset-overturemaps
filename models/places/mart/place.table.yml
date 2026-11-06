@@ -1,7 +1,12 @@
 schema: places
 name: place
 title: 日本の POI
-description: Overture Maps places テーマのうち、住所の国コードが JP の施設。1行が1施設で、店舗・飲食店・医療機関・宿泊施設・公園・寺社などを含む。複数の提供元が同じ施設を持つ場合、Overture が1件にまとめたうえで配布している。営業状態（operating_status）はほとんどのレコードで空なので、閉店した施設を除く用途には使えない。同じ施設が日本語名と英語名で別々に入っていたり、改名や入れ替わりで前の店の行が残っていたりするので、件数を数えるときは exclude_reason が NULL の行に絞る。重複の判定は電話番号と名称の一致だけで、当たらない重複は残る。位置から地方公共団体コード（政令市は区）・メッシュコード（1〜3 次）と、施設が入る建物の building_id を付けたので、市区町村コードやメッシュを持つ他のデータセット、buildings.building と結合できる。
+description: |-
+  Overture Maps places テーマの日本の施設です。1 行が 1 施設で、名称・カテゴリ・住所・電話番号と、市区町村コード・メッシュコード・建物の ID を持ちます。
+
+  - 件数を数えるときは exclude_reason が NULL の行に絞ってください。重複や閉店した施設の行が残っています
+  - 営業状態（operating_status）はほとんどの行で空です
+  - source_licenses に Apache-2.0 を含む行には、README にある Foursquare の NOTICE が適用されます
 keywords:
 - POI
 - 施設
@@ -27,13 +32,13 @@ fields:
   description: その施設が実在する確からしさを Overture が 0〜1 で推定した値
 - name: basic_category
   title: 基本カテゴリ
-  description: Overture が付ける大まかなカテゴリ（restaurant / cafe / convenience_store / hospital など）
+  description: 大まかなカテゴリ（restaurant・cafe・hospital など）
 - name: taxonomy_primary
   title: カテゴリ
   description: Overture の分類体系での主カテゴリ。basic_category より細かい
 - name: name_ja
   title: 名称（日本語）
-  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち ja。無ければ NULL
+  description: 言語別の名称のうち日本語
 - name: phones
   title: 電話番号
   description: 複数ある場合は半角スペース区切り
@@ -45,16 +50,16 @@ fields:
   description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
 - name: id
   title: GERS ID
-  description: Overture が施設に振る ID。リリースをまたいでも同じ施設には同じ ID が付くので、前のリリースとの差分を取るときのキーになる
+  description: Overture の GERS ID。リリースをまたいで同じ施設に同じ ID
 - name: name_en
   title: 名称（英語）
-  description: Overture が言語別に持つ名称（names.rules の variant が language のもの）のうち en。無ければ NULL
+  description: 言語別の名称のうち英語
 - name: taxonomy_hierarchy
   title: カテゴリの階層
   description: 主カテゴリを最上位から並べたもの。「 > 」区切り
 - name: operating_status
   title: 営業状態
-  description: open / permanently_closed / temporarily_closed。ほとんどのレコードで NULL
+  description: open・permanently_closed など。ほとんどの行で NULL
 - name: brand_name
   title: ブランド名
 - name: brand_wikidata
@@ -68,21 +73,21 @@ fields:
   annotations: { queria: { semantic: { role: entity, name: postal_code } } }
 - name: source_datasets
   title: 提供元
-  description: このレコードの属性を提供したデータセット名（meta / Foursquare / Microsoft / AllThePlaces など）。「, 」区切り。Overture は全レコードに含まれる
+  description: 属性を提供したデータセット名。「, 」区切り
 - name: source_licenses
   title: ライセンス
-  description: このレコードに適用されるライセンス。「, 」区切り。Apache-2.0 を含むレコードは Foursquare 由来で、データセットの説明にある NOTICE が適用される
+  description: このレコードに適用されるライセンス。「, 」区切り
 - name: prefecture_code
   title: 都道府県コード
-  description: 2桁。施設が入る市区町村の都道府県。住所の address_region は多くの行で空なので、都道府県で絞るときはこちらを使う
+  description: 2 桁。都道府県で絞るときはこちらを使います
   annotations: { queria: { semantic: { role: entity, name: prefecture } } }
 - name: local_government_code
   title: 全国地方公共団体コード
-  description: 6桁（検査数字つき）。施設の位置が入る市区町村（divisions.division_area）のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
+  description: 6 桁。施設の位置が入る市区町村（政令市は区）
   annotations: { queria: { semantic: { role: entity, name: city } } }
 - name: building_id
   title: 建物の GERS ID
-  description: 施設の位置が入る建物（buildings.building）の building_id。外形が重なる建物では小さい方。建物の外にある施設や、外形の無い建物の中の施設は NULL
+  description: 施設の位置が入る建物の building_id
 - name: mesh1
   title: 1 次メッシュコード
   description: 施設の位置が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
@@ -97,10 +102,10 @@ fields:
   annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: duplicate_of
   title: 重複先の GERS ID
-  description: 同じ施設の別の行と判定したとき、残す側の行の id。判定は 2 つ。正規化した先頭の電話番号が全国で 2 行にだけあり、100m 以内で basic_category が同じもの。記号と空白を除いた名称が同じで 50m 以内、電話番号が両方にあれば同じもの。残す側は閉店・休業でない方、同じなら confidence が高い方、それも同じなら日本語の名称を持つ方。重複でなければ NULL
+  description: 重複と判定したとき、残す側の行の id
 - name: exclude_reason
   title: 除く理由
-  description: 施設を数えるときに除く理由。closed（operating_status が閉店・休業）、duplicate（duplicate_of が入っている）、low_confidence（confidence が 0.5 未満。撤退した店を多く含む）。複数当たるときはこの順で先のもの。除く理由が無ければ NULL
+  description: 数えるときに除く理由（closed・duplicate・low_confidence）
 - name: geometry
   title: ジオメトリ
   description: 施設の位置を表す POINT

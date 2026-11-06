@@ -1,7 +1,10 @@
 schema: buildings
 name: building_part
 title: 日本の建物の部分
-description: Overture Maps buildings テーマの日本の建物の部分（高層部・低層部・塔屋など）。1行が1部分で、building_id が buildings.building の建物を指す。部分ごとの高さと階数を持つので、高さの違う部分からなる建物を立体で描くのに使う。ほとんどが OpenStreetMap 由来。
+description: |-
+  建物の部分（高層部・低層部・塔屋など）です。1 行が 1 部分で、building_id が buildings.building の建物を指します。
+
+  - ほとんどが OpenStreetMap 由来です
 keywords:
 - 建物
 - 高さ

@@ -1,7 +1,12 @@
 schema: base
 name: land_use
 title: 日本の土地利用
-description: Overture Maps base テーマの land_use のうち日本の範囲に入るもの。1行が1区画で、住宅地・商業地・工業地・農地・公園・運動場・学校や病院の敷地・墓地・寺社の境内などの土地の使われ方を面で持つ。元はほぼ OpenStreetMap で、描かれている範囲は地域によって差が大きい。区画の上に取った代表点から JIS X 0410 のメッシュコード（1〜3 次）と、代表点が入る市区町村の地方公共団体コード（divisions.division_area から引いたもの。政令市は区）を、外形から面積を付けたので、市区町村やメッシュごとに土地利用の面積を集計できる。land_use_id は Overture の GERS ID だが、base テーマの ID は 2026-09 のリリースで全件振り直されたので、ほかのテーマほどリリースをまたいで安定していない。
+description: |-
+  Overture Maps base テーマの日本の土地利用です。1 行が 1 区画で、住宅地・農地・公園・学校の敷地・墓地などを面で持ちます。
+
+  - 元はほぼ OpenStreetMap で、描かれている範囲は地域によって差が大きいです。市区町村全体の土地利用の割合を出す用途には向きません
+  - 市区町村コードは代表点の市区町村の 1 つだけです
+  - land_use_id は 2026-09 のリリースで全件振り直されました
 keywords:
 - 土地利用
 - 農地
@@ -16,13 +21,13 @@ sources:
 fields:
 - name: land_use_id
   title: GERS ID
-  description: Overture が地物に振る ID。base テーマの ID は 2026-09 に全件振り直されたので、リリースをまたいだ突き合わせには注意する
+  description: Overture の GERS ID。2026-09 に全件振り直されました
 - name: subtype
   title: 種類の大分類
-  description: residential / developed / agriculture / park / recreation / education / medical / cemetery / religious / protected など
+  description: residential・agriculture・park・education など
 - name: class
   title: 種類
-  description: residential / farmland / park / grass / pitch / school / cemetery / industrial / commercial など subtype より細かい分類
+  description: residential・farmland・park・grass・school など
 - name: name
   title: 名称
   description: 主たる名称。名前の付いた地物だけ（公園名・学校名など）
@@ -43,7 +48,7 @@ fields:
   description: 地物の提供元。日本ではほぼ OpenStreetMap
 - name: geometry_type
   title: 形状の種類
-  description: ほぼすべてが POLYGON / MULTIPOLYGON。OSM で閉じていない線のまま描かれた区画だけ LINESTRING
+  description: ほぼすべてが POLYGON・MULTIPOLYGON
 - name: area_m2
   title: 面積（m²）
   description: 外形の面積を楕円体の上で測ったもの。LINESTRING の区画は 0
@@ -53,7 +58,7 @@ fields:
   annotations: { queria: { semantic: { role: entity, name: prefecture } } }
 - name: local_government_code
   title: 全国地方公共団体コード
-  description: 6桁（検査数字つき）。代表点が入る市区町村のコードで、政令市は区のコード。どの市区町村のポリゴンにも入らなければ NULL
+  description: 6 桁。代表点が入る市区町村（政令市は区）
   annotations: { queria: { semantic: { role: entity, name: city } } }
 - name: longitude
   title: 経度
@@ -71,7 +76,7 @@ fields:
   annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: mesh3
   title: 3 次メッシュコード
-  description: 代表点が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）。行はこの順に並んでいるので、メッシュで絞ると必要な部分だけを読む
+  description: 代表点が入る 3 次メッシュ（約 1km 四方）。行はこの順です
   annotations: { queria: { semantic: { role: entity, name: mesh } } }
 - name: geometry
   title: ジオメトリ
