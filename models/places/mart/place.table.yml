@@ -16,6 +16,7 @@ keywords:
 annotations: { queria: { themes: [commerce_services] } }
 sources:
 - path: https://docs.overturemaps.org/guides/places/
+primary_key: [id]
 fields:
 - name: longitude
   title: 経度
