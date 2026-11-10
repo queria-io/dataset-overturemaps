@@ -15,3 +15,4 @@ keywords:
 annotations: { queria: { published: false, themes: [land_climate] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/divisions/division_area/
+primary_key: [id]

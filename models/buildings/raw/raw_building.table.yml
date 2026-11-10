@@ -13,3 +13,4 @@ keywords:
 annotations: { queria: { published: false, themes: [housing_land] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/buildings/building/
+primary_key: [id]

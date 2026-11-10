@@ -18,6 +18,7 @@ keywords:
 annotations: { queria: { themes: [housing_land] } }
 sources:
 - path: https://docs.overturemaps.org/guides/buildings/
+primary_key: [building_id]
 fields:
 - name: building_id
   title: GERS ID

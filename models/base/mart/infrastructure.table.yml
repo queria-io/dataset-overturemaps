@@ -20,6 +20,7 @@ keywords:
 annotations: { queria: { themes: [land_climate] } }
 sources:
 - path: https://docs.overturemaps.org/guides/base/
+primary_key: [infrastructure_id]
 fields:
 - name: infrastructure_id
   title: GERS ID

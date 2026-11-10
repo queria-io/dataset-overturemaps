@@ -13,3 +13,4 @@ keywords:
 annotations: { queria: { published: false, themes: [land_climate] } }
 sources:
 - path: https://docs.overturemaps.org/schema/reference/base/land_use/
+primary_key: [id]
