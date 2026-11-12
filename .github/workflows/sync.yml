@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: queria-io/dataset-shared/.github/workflows/sync.yml@fe59be721647d5b1bbffe1ef3eb2d318c81be3f3
+    uses: queria-io/dataset-shared/.github/workflows/sync.yml@67443c88b6ec355559c91bf866239e10073ccf83
     with:
       dataset_name: overturemaps
       # 建物（約 5,400 万棟）の取り出しとビルドが加わり、既定の 90 分では足りない。
@@ -30,5 +30,4 @@ jobs:
       # data/ (約 12GB) と合わせるとランナーの空きを超えるので、先に空ける
       free_disk: true
     secrets:
-      QUERIA_TOKEN: ${{ secrets.QUERIA_TOKEN }}
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
