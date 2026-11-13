@@ -211,7 +211,7 @@ group by local_government_code
 ```bash
 git submodule update --init
 uv sync
-scripts/build.sh   # queria sync -- python main.py
+scripts/build.sh   # fdl checkout → python main.py → fdl commit
 ```
 
 毎月 GitHub Actions の Sync が実行され、最新のリリースを取り込みます。
