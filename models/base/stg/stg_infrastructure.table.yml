@@ -1,0 +1,4 @@
+schema: base
+name: stg_infrastructure
+description: raw_infrastructure の主な列を平坦化し、代表点を足したビュー。
+annotations: { queria: { published: false } }

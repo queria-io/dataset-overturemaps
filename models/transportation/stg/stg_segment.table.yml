@@ -1,0 +1,4 @@
+schema: transportation
+name: stg_segment
+description: raw_segment から、道路網の辺を作るのに使う列と、区間全体に効く道路の属性・最高速度を取り出したビュー。
+annotations: { queria: { published: false } }

@@ -25,6 +25,10 @@ models:
       +pre-hook: "CALL overturemaps.set_option('parquet_row_group_size', 8192, schema => 'places')"
       raw:
         +materialized: table
+      # stg は raw の入れ子の列を平坦化するだけなので、実体化せずに mart から展開させる。
+      # 建物は 5,000 万行あり、実体化すると raw と同じ大きさの表がもう 1 つできる
+      stg:
+        +materialized: view
       # mart も実体化する。view だと st_x / st_y が読むたびに評価され、spatial 拡張を
       # 読み込んでいないブラウザの DuckDB からは統計も SQL も通らない
       mart:
@@ -32,20 +36,28 @@ models:
     transportation:
       raw:
         +materialized: table
+      stg:
+        +materialized: view
       mart:
         +materialized: table
     divisions:
       raw:
         +materialized: table
+      stg:
+        +materialized: view
       mart:
         +materialized: table
     buildings:
       raw:
         +materialized: table
+      stg:
+        +materialized: view
       mart:
         +materialized: table
     base:
       raw:
         +materialized: table
+      stg:
+        +materialized: view
       mart:
         +materialized: table

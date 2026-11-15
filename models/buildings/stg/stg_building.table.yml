@@ -1,0 +1,4 @@
+schema: buildings
+name: stg_building
+description: raw_building の主な列を平坦化し、面積と重心を足したビュー。
+annotations: { queria: { published: false } }

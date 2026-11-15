@@ -1,0 +1,4 @@
+schema: divisions
+name: raw_lg_code
+description: Queria の lg_code（総務省の全国地方公共団体コード）を、取り出したままの形で持つ中間テーブル。divisions.division の照合に使う。
+annotations: { queria: { published: false } }

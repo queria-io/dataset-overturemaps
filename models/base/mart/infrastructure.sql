@@ -5,21 +5,7 @@
 
 -- located と最後の select の 2 か所から読むので、実体化させずに読む側ごとに展開させる
 with infrastructure as not materialized (
-    select
-        id as infrastructure_id,
-        subtype,
-        class,
-        names.primary as name,
-        level,
-        height,
-        surface,
-        wikidata,
-        sources[1].dataset as source_dataset,
-        st_geometrytype(geometry)::varchar as geometry_type,
-        st_pointonsurface(geometry) as point,
-        geometry,
-        release
-    from {{ ref('raw_infrastructure') }}
+    select * from {{ ref('stg_infrastructure') }}
 ),
 
 municipality as (

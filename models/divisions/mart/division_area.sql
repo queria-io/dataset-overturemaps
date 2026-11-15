@@ -2,7 +2,7 @@
    1行が1ポリゴンで、division_id が division の区画を指す。 #}
 
 select
-    area.id as area_id,
+    area.area_id,
     area.division_id,
     area.subtype,
     area.class,
@@ -15,6 +15,6 @@ select
     area.is_territorial,
     area.geometry,
     area.release
-from {{ ref('raw_division_area') }} as area
+from {{ ref('stg_division_area') }} as area
 left join {{ ref('division') }} as division using (division_id)
 order by st_hilbert(area.bbox.xmin, area.bbox.ymin, {'min_x': 122.0, 'min_y': 20.0, 'max_x': 154.5, 'max_y': 46.0}::box_2d)
