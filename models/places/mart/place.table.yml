@@ -6,7 +6,7 @@ description: |-
 
   - 件数を数えるときは exclude_reason が NULL の行に絞ってください。重複や閉店した施設の行が残っています
   - 営業状態（operating_status）はほとんどの行で空です
-  - source_licenses に Apache-2.0 を含む行には、README にある Foursquare の NOTICE が適用されます
+  - source_licenses に Apache-2.0 を含む行には、データセットの説明にある Foursquare の NOTICE が適用されます
 keywords:
 - POI
 - 施設
