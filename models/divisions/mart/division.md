@@ -1,0 +1,82 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: divisions.division
+title: 日本の行政区画
+description: |-
+  Overture Maps divisions テーマの日本の区画に、地方公共団体コードを付けたものです。1 行が 1 区画で、都道府県・市区町村・政令市の区・町丁・字の代表点を持ちます。
+
+  - 市区町村そのものの行は is_municipality が true です
+  - 町丁・字の行には、その区画が属する市区町村のコードが入ります
+  - ポリゴンは divisions.division_area にあります
+keywords:
+  - 行政区画
+  - 市区町村
+  - 都道府県
+  - 町丁
+  - 地方公共団体コード
+  - GERS
+  - GIS
+sources:
+  - path: https://docs.overturemaps.org/guides/divisions/
+primary_key: [division_id]
+fields:
+  - name: division_id
+    title: GERS ID
+    description: Overture の GERS ID。リリースをまたいで同じ区画に同じ ID
+  - name: subtype
+    title: 区画の種類
+    description: country・region・county・locality・macrohood・neighborhood・microhood
+  - name: class
+    title: 区画の分類
+    description: locality の city・town・village など
+  - name: name
+    title: 名称
+    description: Overture の主たる名称。county はローマ字
+  - name: name_en
+    title: 名称（英語）
+    description: Overture が言語別に持つ名称のうち en。無ければ NULL
+  - name: prefecture
+    title: 都道府県名
+    description: 階層をさかのぼった都道府県（subtype = region）の名称
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 2桁。prefecture を地方公共団体コードの一覧と照合したもの
+    semantic: {role: entity, name: prefecture}
+  - name: local_government_code
+    title: 全国地方公共団体コード
+    description: 6 桁。町丁・字の行は属する市区町村（政令市は区）
+    semantic: {role: entity, name: city}
+  - name: is_municipality
+    title: 市区町村そのものか
+    description: 市区町村そのものの行なら true。1 つのコードに 1 行
+  - name: parent_division_id
+    title: 親の GERS ID
+    description: 1つ上の区画の division_id
+  - name: hierarchy_names
+    title: 階層
+    description: 都道府県から自分までの区画の名称を「 > 」で区切ったもの（国は省く）
+  - name: population
+    title: 人口
+    description: OSM の population タグ由来。多くの行で NULL
+  - name: wikidata
+    title: Wikidata ID
+  - name: longitude
+    title: 経度
+  - name: latitude
+    title: 緯度
+  - name: mesh1
+    title: 1 次メッシュコード
+    description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+    semantic: {role: entity, name: mesh}
+  - name: mesh2
+    title: 2 次メッシュコード
+    description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。行はこの順に並んでいる
+    semantic: {role: entity, name: mesh}
+  - name: geometry
+    title: ジオメトリ
+    description: 区画の代表点を表す POINT
+  - name: release
+    title: リリース
+    description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
+themes: [land_climate]
+---

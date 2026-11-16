@@ -1,0 +1,49 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: buildings.building_part
+title: 日本の建物の部分
+description: |-
+  建物の部分（高層部・低層部・塔屋など）です。1 行が 1 部分で、building_id が buildings.building の建物を指します。
+
+  - ほとんどが OpenStreetMap 由来です
+keywords:
+  - 建物
+  - 高さ
+  - GIS
+sources:
+  - path: https://docs.overturemaps.org/guides/buildings/
+primary_key: [part_id]
+fields:
+  - name: part_id
+    title: GERS ID
+    description: Overture が建物の部分に振る ID
+  - name: building_id
+    title: 建物の GERS ID
+    description: buildings.building の building_id
+  - name: name
+    title: 名称
+  - name: height
+    title: 高さ（m）
+  - name: num_floors
+    title: 地上階数
+  - name: num_floors_underground
+    title: 地下階数
+  - name: min_height
+    title: 下端の高さ（m）
+  - name: min_floor
+    title: 下端の階
+    description: 部分が始まる階。下に別の部分が載っているとき
+  - name: is_underground
+    title: 地下の部分か
+  - name: roof_shape
+    title: 屋根の形
+  - name: source_dataset
+    title: 提供元
+  - name: geometry
+    title: ジオメトリ
+    description: 部分の外形の POLYGON / MULTIPOLYGON
+  - name: release
+    title: リリース
+    description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
+themes: [housing_land]
+---

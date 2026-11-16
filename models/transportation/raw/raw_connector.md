@@ -1,0 +1,18 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: transportation.raw_connector
+title: 日本の道路の接続点（Overture のスキーマのまま）
+description: |-
+  transportation.raw_segment の道路区間どうしがつながる点（交差点と道の端）を、Overture のスキーマのまま持ちます。
+
+  - 列の意味は Overture のスキーマのリファレンスを参照してください
+keywords:
+  - 道路
+  - 交差点
+  - GIS
+  - Overture Maps
+sources:
+  - path: https://docs.overturemaps.org/schema/reference/transportation/connector/
+published: false
+themes: [transport_tourism]
+---

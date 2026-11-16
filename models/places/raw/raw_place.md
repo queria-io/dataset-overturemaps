@@ -1,0 +1,19 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: places.raw_place
+title: 日本の POI（Overture のスキーマのまま）
+description: |-
+  places.place と同じ施設を、Overture のスキーマのまま全列で持ちます。名前の言語別・別名、副カテゴリ、SNS などはここにあります。
+
+  - 列の意味は Overture のスキーマのリファレンスを参照してください
+  - release 列だけは Queria が追加した、取り込み元のリリース名です
+keywords:
+  - POI
+  - 施設
+  - GIS
+  - Overture Maps
+sources:
+  - path: https://docs.overturemaps.org/schema/reference/places/place/
+published: false
+themes: [commerce_services]
+---

@@ -1,0 +1,60 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: divisions.division_area
+title: 日本の行政区画のポリゴン
+description: |-
+  Overture Maps divisions テーマの日本の区画のポリゴンです。1 行が 1 ポリゴンで、区画の名称と地方公共団体コードを持ちます。
+
+  - 陸地だけの形（is_land）と領海を含む形（is_territorial）が別の行になることがあります。点を当てるときはどちらかに絞ってください
+keywords:
+  - 行政区画
+  - 市区町村
+  - 境界
+  - ポリゴン
+  - 地方公共団体コード
+  - GIS
+sources:
+  - path: https://docs.overturemaps.org/guides/divisions/
+primary_key: [area_id]
+fields:
+  - name: area_id
+    title: GERS ID
+    description: Overture がポリゴンに振る ID
+  - name: division_id
+    title: 区画の GERS ID
+    description: divisions.division の division_id
+  - name: subtype
+    title: 区画の種類
+    description: divisions.division の subtype と同じ
+  - name: class
+    title: ポリゴンの分類
+    description: land（陸地）/ maritime（領海を含む）
+  - name: name
+    title: 名称
+  - name: prefecture
+    title: 都道府県名
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 2桁
+    semantic: {role: entity, name: prefecture}
+  - name: local_government_code
+    title: 全国地方公共団体コード
+    description: 6 桁。division の local_government_code と同じ
+    semantic: {role: entity, name: city}
+  - name: is_municipality
+    title: 市区町村そのものか
+    description: divisions.division の is_municipality と同じ
+  - name: is_land
+    title: 陸地か
+    description: 陸地の部分だけの形なら true
+  - name: is_territorial
+    title: 領域か
+    description: 領海を含む形なら true
+  - name: geometry
+    title: ジオメトリ
+    description: 区画の POLYGON / MULTIPOLYGON
+  - name: release
+    title: リリース
+    description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
+themes: [land_climate]
+---

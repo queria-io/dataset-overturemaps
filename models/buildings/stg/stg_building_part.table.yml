@@ -1,4 +1,0 @@
-schema: buildings
-name: stg_building_part
-description: raw_building_part の主な列を平坦化したビュー。
-annotations: { queria: { published: false } }

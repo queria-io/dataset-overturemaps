@@ -1,0 +1,42 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: transportation.road_node
+title: 道路網の節点
+description: |-
+  日本の道路網の節点（交差点と道の端）です。transportation.road_edge の from_node / to_node がこの node_id を指します。
+
+  - node_id はリリースごとに振り直します。リリースをまたいで同じ点を追うときは gers_id を使ってください
+keywords:
+  - 道路
+  - 交差点
+  - 道路網
+  - 経路
+  - 到達圏
+  - GIS
+sources:
+  - path: https://docs.overturemaps.org/guides/transportation/
+primary_key: [node_id]
+fields:
+  - name: node_id
+    title: 節点 ID
+    description: 2 次メッシュの順の整数。リリースごとに振り直します
+  - name: gers_id
+    title: GERS ID
+    description: Overture の connector の ID（raw_connector の id）
+  - name: longitude
+    title: 経度
+  - name: latitude
+    title: 緯度
+  - name: mesh1
+    title: 1 次メッシュコード
+    description: 節点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+    semantic: {role: entity, name: mesh}
+  - name: mesh2
+    title: 2 次メッシュコード
+    description: 節点が入る 2 次メッシュ（約 10km 四方）。行はこの順です
+    semantic: {role: entity, name: mesh}
+  - name: geometry
+    title: ジオメトリ
+    description: 節点の位置を表す POINT
+themes: [transport_tourism]
+---

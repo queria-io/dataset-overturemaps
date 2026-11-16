@@ -1,0 +1,41 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: places.category
+title: Overture Maps の施設の分類と産業分類の対応表
+description: |-
+  Overture の施設の分類を、日本標準産業分類の大分類・中分類、OpenStreetMap のタグ、無人の設備かに対応させた表です。1 行が basic_category の既定の行か、その中で行き先の違う taxonomy_primary の行です。
+
+  - Queria が手で当てたもので、公式の対応ではありません
+  - place に当てるときは、basic_category と taxonomy_primary の両方が合う行を優先し、なければ既定の行を使います
+keywords:
+  - POI
+  - 施設
+  - 店舗
+  - 産業分類
+  - 対応表
+  - OpenStreetMap
+  - Overture Maps
+sources:
+  - path: https://docs.overturemaps.org/guides/places/
+  - path: https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/R05index.htm
+fields:
+  - name: basic_category
+    title: Overture の基本分類
+    description: place の basic_category と同じ値
+  - name: taxonomy_primary
+    title: Overture の詳細分類
+    description: NULL の行は basic_category の既定の行
+  - name: industry_major_code
+    title: 産業大分類コード
+    description: 日本標準産業分類（第14回改定）の大分類（A〜T）
+  - name: industry_code
+    title: 産業中分類コード
+    description: 日本標準産業分類（第14回改定）の中分類（2 桁）
+  - name: osm_tag
+    title: OpenStreetMap のタグ
+    description: OpenStreetMap の主なタグ（amenity=restaurant など）
+  - name: is_unattended
+    title: 無人の設備か
+    description: ATM・自動販売機・駐車場など、人のいない設備なら true
+themes: [commerce_services]
+---

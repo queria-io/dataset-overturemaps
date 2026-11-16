@@ -1,0 +1,19 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: base.raw_land_use
+title: 日本の土地利用（Overture のスキーマのまま）
+description: |-
+  base.land_use と同じ区画を、Overture のスキーマのまま全列で持ちます。OpenStreetMap の元のタグ（source_tags）などはここにあります。
+
+  - 列の意味は Overture のスキーマのリファレンスを参照してください
+  - release 列だけは Queria が追加した、取り込み元のリリース名です
+keywords:
+  - 土地利用
+  - GIS
+  - Overture Maps
+sources:
+  - path: https://docs.overturemaps.org/schema/reference/base/land_use/
+primary_key: [id]
+published: false
+themes: [land_climate]
+---
