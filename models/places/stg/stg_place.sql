@@ -1,4 +1,4 @@
-{# raw_place の入れ子の列を平坦化したもの。列の選び方は place.table.yml。 #}
+{# raw_place の入れ子の列を平坦化したもの。列の選び方は place.md。 #}
 
 select
     id,

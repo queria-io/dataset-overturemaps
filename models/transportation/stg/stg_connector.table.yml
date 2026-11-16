@@ -1,4 +1,0 @@
-schema: transportation
-name: stg_connector
-description: raw_connector の id と経緯度のビュー。
-annotations: { queria: { published: false } }

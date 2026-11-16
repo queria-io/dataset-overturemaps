@@ -1,4 +1,4 @@
-{# raw_place の入れ子の列を平坦化した日本の POI。列の選び方は place.table.yml。
+{# raw_place の入れ子の列を平坦化した日本の POI。列の選び方は place.md。
    位置から、メッシュコード、施設が入る市区町村の地方公共団体コード、施設が入る建物の
    building_id を付ける。市区町村の決め方は buildings.building と同じで、政令市は区を採る。
    結合で raw_place の並びが崩れるので、近い場所の行が同じ行グループに入るよう、最後に

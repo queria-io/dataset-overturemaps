@@ -1,4 +1,0 @@
-schema: divisions
-name: stg_division_area
-description: raw_division_area の列を選んだビュー。
-annotations: { queria: { published: false } }

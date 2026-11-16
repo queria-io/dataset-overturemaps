@@ -1,0 +1,21 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: divisions.raw_division_area
+title: 日本の行政区画のポリゴン（Overture のスキーマのまま）
+description: |-
+  divisions.division_area と同じポリゴンを、Overture のスキーマのまま全列で持ちます。
+
+  - 列の意味は Overture のスキーマのリファレンスを参照してください
+  - release 列だけは Queria が追加した、取り込み元のリリース名です
+keywords:
+  - 行政区画
+  - 市区町村
+  - 境界
+  - GIS
+  - Overture Maps
+sources:
+  - path: https://docs.overturemaps.org/schema/reference/divisions/division_area/
+primary_key: [id]
+published: false
+themes: [land_climate]
+---

@@ -1,4 +1,0 @@
-schema: base
-name: stg_land_use
-description: raw_land_use の主な列を平坦化し、面積と代表点を足したビュー。
-annotations: { queria: { published: false } }

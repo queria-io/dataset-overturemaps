@@ -1,0 +1,92 @@
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: buildings.building
+title: 日本の建物
+description: |-
+  Overture Maps buildings テーマの日本の建物です。1 行が 1 棟で、外形・高さ・階数・用途と、市区町村コード・メッシュコードを持ちます。
+
+  - 高さや階数を持つのは OpenStreetMap 由来の一部（約 420 万棟）だけです
+  - 市区町村コードとメッシュコードは外形の重心から付けています
+keywords:
+  - 建物
+  - 建物 ID
+  - 高さ
+  - 階数
+  - 地方公共団体コード
+  - メッシュ
+  - GERS
+  - GIS
+sources:
+  - path: https://docs.overturemaps.org/guides/buildings/
+primary_key: [building_id]
+fields:
+  - name: building_id
+    title: GERS ID
+    description: Overture の GERS ID。リリースをまたいで同じ建物に同じ ID
+  - name: subtype
+    title: 用途の大分類
+    description: residential・commercial など。多くの行で NULL
+  - name: class
+    title: 用途
+    description: house・apartments・school など。多くの行で NULL
+  - name: name
+    title: 名称
+    description: 主たる名称。名前の付いた建物だけ
+  - name: height
+    title: 高さ（m）
+    description: 地面から建物の最も高い所まで。多くの行で NULL
+  - name: num_floors
+    title: 地上階数
+  - name: num_floors_underground
+    title: 地下階数
+  - name: min_height
+    title: 下端の高さ（m）
+    description: 建物の下端が地面より上にあるとき（張り出し部など）の高さ
+  - name: is_underground
+    title: 地下の建物か
+  - name: has_parts
+    title: 部分を持つか
+    description: true なら buildings.building_part にこの建物の部分がある
+  - name: roof_shape
+    title: 屋根の形
+    description: flat / gabled / hipped など
+  - name: source_dataset
+    title: 提供元
+    description: OpenStreetMap・Microsoft ML Buildings・Zenodo
+  - name: area_m2
+    title: 建築面積（m²）
+    description: 外形の面積を楕円体の上で測ったもの
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 2桁。重心が入る市区町村の都道府県
+    semantic: {role: entity, name: prefecture}
+  - name: local_government_code
+    title: 全国地方公共団体コード
+    description: 6 桁。重心が入る市区町村（政令市は区）
+    semantic: {role: entity, name: city}
+  - name: longitude
+    title: 経度
+    description: 外形の重心
+  - name: latitude
+    title: 緯度
+    description: 外形の重心
+  - name: mesh1
+    title: 1 次メッシュコード
+    description: 重心が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
+    semantic: {role: entity, name: mesh}
+  - name: mesh2
+    title: 2 次メッシュコード
+    description: 重心が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
+    semantic: {role: entity, name: mesh}
+  - name: mesh3
+    title: 3 次メッシュコード
+    description: 重心が入る 3 次メッシュ（約 1km 四方）。行はこの順です
+    semantic: {role: entity, name: mesh}
+  - name: geometry
+    title: ジオメトリ
+    description: 建物の外形の POLYGON / MULTIPOLYGON
+  - name: release
+    title: リリース
+    description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
+themes: [housing_land]
+---
