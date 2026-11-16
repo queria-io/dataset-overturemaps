@@ -2,12 +2,7 @@
    node_id は 2 次メッシュ順に振り直した整数で、Overture の版が変わると振り直しになる。 #}
 
 with node as (
-    select
-        id as gers_id,
-        st_x(geometry) as longitude,
-        st_y(geometry) as latitude,
-        geometry
-    from {{ ref('raw_connector') }}
+    select * from {{ ref('stg_connector') }}
 )
 
 select

@@ -7,25 +7,7 @@
 -- located と最後の select の 2 か所から読むので、そのままだと外形ごと全棟を一度実体化する。
 -- located が読むのは building_id と重心だけなので、実体化させずに読む側ごとに展開させる
 with building as not materialized (
-    select
-        id as building_id,
-        subtype,
-        class,
-        names.primary as name,
-        height,
-        num_floors,
-        num_floors_underground,
-        min_height,
-        is_underground,
-        has_parts,
-        roof_shape,
-        sources[1].dataset as source_dataset,
-        -- st_area_spheroid は緯度・経度の順の座標を受け取るので入れ替えて渡す（そのままだと NaN になる）
-        st_area_spheroid(st_flipcoordinates(geometry)) as area_m2,
-        st_centroid(geometry) as centroid,
-        geometry,
-        release
-    from {{ ref('raw_building') }}
+    select * from {{ ref('stg_building') }}
 ),
 
 municipality as (

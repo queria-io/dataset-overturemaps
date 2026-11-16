@@ -1,0 +1,4 @@
+schema: places
+name: stg_place
+description: raw_place の入れ子の列を平坦化したビュー。
+annotations: { queria: { published: false } }

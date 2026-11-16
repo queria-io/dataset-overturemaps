@@ -6,23 +6,7 @@
 
 -- located と最後の select の 2 か所から読むので、実体化させずに読む側ごとに展開させる
 with land_use as not materialized (
-    select
-        id as land_use_id,
-        subtype,
-        class,
-        names.primary as name,
-        level,
-        surface,
-        elevation,
-        wikidata,
-        sources[1].dataset as source_dataset,
-        st_geometrytype(geometry)::varchar as geometry_type,
-        -- st_area_spheroid は緯度・経度の順の座標を受け取るので入れ替えて渡す。線の区画は 0 になる
-        st_area_spheroid(st_flipcoordinates(geometry)) as area_m2,
-        st_pointonsurface(geometry) as point,
-        geometry,
-        release
-    from {{ ref('raw_land_use') }}
+    select * from {{ ref('stg_land_use') }}
 ),
 
 municipality as (

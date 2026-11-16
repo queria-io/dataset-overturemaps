@@ -1,6 +1,6 @@
 {# 日本の行政区画に地方公共団体コードを付けたもの。1行が1区画。
    Overture の区画はコードを持たないので、都道府県名と市区町村名を総務省の一覧（Queria の
-   lg_code、pipelines/divisions.py が data/divisions/lg_code.parquet に保存する）と照合する。
+   lg_code、stg_lg_code）と照合する。
 
    市区町村にあたる区画は subtype = locality（市町村・東京の特別区）と macrohood（政令市の区）。
    locality には郡や大字・字（class = hamlet）も混ざっているが、照合のキーが一覧の名前と
@@ -13,31 +13,13 @@
 {% set gun = "'郡(\\(.*\\))?$'" %}
 
 with division as (
-    select
-        id as division_id,
-        subtype,
-        class,
-        names.primary as name,
-        -- rules の variant は official / alternate / short で、言語は language に入る
-        coalesce(
-            names.common['en'],
-            list_filter(names.rules, r -> r.language = 'en')[1].value
-        ) as name_en,
-        parent_division_id,
-        -- 日本の区画は階層が 1 本だけ。先頭が国、末尾が自分自身
-        hierarchies[1] as hierarchy,
-        list_filter(hierarchies[1], h -> h.subtype = 'region')[1].name as prefecture,
-        population,
-        wikidata,
-        geometry,
-        release
-    from {{ ref('raw_division') }}
+    select * from {{ ref('stg_division') }}
 ),
 
 lg_code as (
-    -- 「保土ケ谷区」と「保土ヶ谷区」のような小書きの揺れを両側で畳む
-    select lg_code, pref_code, prefecture, replace(replace(city, 'ヶ', 'ケ'), 'ヵ', 'カ') as city, code_type
-    from read_parquet('data/divisions/lg_code.parquet')
+    -- 「保土ケ谷区」と「保土ヶ谷区」のような小書きの揺れは stg_lg_code で畳んである。区画の側はここで畳む
+    select *
+    from {{ ref('stg_lg_code') }}
     -- 北方領土の 6 村は Overture に区画が無く、国後島の泊村は北海道の泊村と名前が重なる
     where not (code_type = 'municipality' and lg_code between '016951' and '017001')
 ),
@@ -71,7 +53,7 @@ representative as (
     -- 下の町丁へのコードの引き継ぎは、どちらの行の下にあっても効くよう municipality を使う
     select municipality.division_id
     from municipality
-    left join (select distinct division_id from {{ ref('raw_division_area') }}) as area using (division_id)
+    left join (select distinct division_id from {{ ref('stg_division_area') }}) as area using (division_id)
     qualify row_number() over (
         partition by municipality.lg_code
         order by area.division_id is not null desc, municipality.division_id
