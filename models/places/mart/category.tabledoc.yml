@@ -16,7 +16,7 @@ topics:
 sources:
   - places
   - id: r05index
-    path: https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/R05index.htm
+    url: https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/R05index.htm
 columns:
   - name: basic_category
     title: Overture の基本分類

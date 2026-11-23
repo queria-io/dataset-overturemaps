@@ -13,6 +13,6 @@ topics:
   - Overture Maps
 sources:
   - id: division_area
-    path: https://docs.overturemaps.org/schema/reference/divisions/division_area/
+    url: https://docs.overturemaps.org/schema/reference/divisions/division_area/
 primary_key: [id]
-listed: false
+hidden: true

@@ -1,3 +1,3 @@
 $schema: https://tabledoc.queria.io/schemas/table/v1.json
 description: raw_division の名前・英語名・階層・都道府県名を取り出したビュー。
-listed: false
+hidden: true

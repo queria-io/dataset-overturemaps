@@ -13,5 +13,5 @@ topics:
   - OpenStreetMap
 sources:
   - id: segment
-    path: https://docs.overturemaps.org/schema/reference/transportation/segment/
-listed: false
+    url: https://docs.overturemaps.org/schema/reference/transportation/segment/
+hidden: true

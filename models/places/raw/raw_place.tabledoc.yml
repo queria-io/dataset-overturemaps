@@ -12,5 +12,5 @@ topics:
   - Overture Maps
 sources:
   - id: place
-    path: https://docs.overturemaps.org/schema/reference/places/place/
-listed: false
+    url: https://docs.overturemaps.org/schema/reference/places/place/
+hidden: true

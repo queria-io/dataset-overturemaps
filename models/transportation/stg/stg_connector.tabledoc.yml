@@ -1,3 +1,3 @@
 $schema: https://tabledoc.queria.io/schemas/table/v1.json
 description: raw_connector の id と経緯度のビュー。
-listed: false
+hidden: true
