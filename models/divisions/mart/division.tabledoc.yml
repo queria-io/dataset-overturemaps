@@ -38,11 +38,11 @@ columns:
   - name: prefecture_code
     title: 都道府県コード
     description: 2桁。prefecture を地方公共団体コードの一覧と照合したもの
-    entity: {type: foreign, name: prefecture}
+    entity: prefecture
   - name: local_government_code
     title: 全国地方公共団体コード
     description: 6 桁。町丁・字の行は属する市区町村（政令市は区）
-    entity: {type: foreign, name: city}
+    entity: city
   - name: is_municipality
     title: 市区町村そのものか
     description: 市区町村そのものの行なら true。1 つのコードに 1 行
@@ -64,11 +64,11 @@ columns:
   - name: mesh1
     title: 1 次メッシュコード
     description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: mesh2
     title: 2 次メッシュコード
     description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。行はこの順に並んでいる
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: geometry
     title: ジオメトリ
     description: 区画の代表点を表す POINT

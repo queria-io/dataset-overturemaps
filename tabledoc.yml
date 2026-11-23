@@ -26,14 +26,12 @@ homepage: https://github.com/queria-io/dataset-overturemaps
 language: ja
 licenses:
   - id: CDLA-Permissive-2.0
-    spdx: CDLA-Permissive-2.0
     url: https://cdla.dev/permissive-2-0/
     title: Community Data License Agreement – Permissive, Version 2.0
     commercial_use: true
     share_alike: false
     attribution_required: false
   - id: Apache-2.0
-    spdx: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
     title: Apache License 2.0
     commercial_use: true
@@ -43,7 +41,6 @@ licenses:
   - CC-BY-4.0
   - JP-GOV-STD-2.0
   - id: ODbL-1.0
-    spdx: ODbL-1.0
     url: https://opendatacommons.org/licenses/odbl/1-0/
     title: Open Data Commons Open Database License 1.0
     commercial_use: true
@@ -53,55 +50,55 @@ licenses:
 sources:
   - id: places
     title: Overture Maps places
-    path: https://docs.overturemaps.org/guides/places/
+    url: https://docs.overturemaps.org/guides/places/
   - id: transportation
     title: Overture Maps transportation
-    path: https://docs.overturemaps.org/guides/transportation/
+    url: https://docs.overturemaps.org/guides/transportation/
   - id: divisions
     title: Overture Maps divisions
-    path: https://docs.overturemaps.org/guides/divisions/
+    url: https://docs.overturemaps.org/guides/divisions/
   - id: buildings
     title: Overture Maps buildings
-    path: https://docs.overturemaps.org/guides/buildings/
+    url: https://docs.overturemaps.org/guides/buildings/
   - id: base
     title: Overture Maps base
-    path: https://docs.overturemaps.org/guides/base/
+    url: https://docs.overturemaps.org/guides/base/
   - id: code
     title: 総務省 全国地方公共団体コード
-    path: https://www.soumu.go.jp/denshijiti/code.html
+    url: https://www.soumu.go.jp/denshijiti/code.html
 
 contributors:
   - id: overturemaps
     title: Overture Maps Foundation
-    path: https://overturemaps.org/
+    url: https://overturemaps.org/
     roles: [rightsHolder]
   - id: os-places
     title: Foursquare Labs, Inc.
-    path: https://opensource.foursquare.com/os-places/
+    url: https://opensource.foursquare.com/os-places/
     roles: [rightsHolder]
   - id: copyright
     title: OpenStreetMap contributors
-    path: https://www.openstreetmap.org/copyright
+    url: https://www.openstreetmap.org/copyright
     roles: [rightsHolder]
   - id: globalmlbuildingfootprints
     title: Microsoft
-    path: https://github.com/microsoft/GlobalMLBuildingFootprints
+    url: https://github.com/microsoft/GlobalMLBuildingFootprints
     roles: [rightsHolder]
   - id: zenodo
     title: Shi et al.（Zenodo）
-    path: https://doi.org/10.5281/zenodo.8174931
+    url: https://doi.org/10.5281/zenodo.8174931
     roles: [rightsHolder]
   - id: geoboundaries
     title: geoBoundaries
-    path: https://www.geoboundaries.org/
+    url: https://www.geoboundaries.org/
     roles: [rightsHolder]
   - id: communitymaps
     title: Esri Community Maps contributors
-    path: https://communitymaps.arcgis.com/
+    url: https://communitymaps.arcgis.com/
     roles: [rightsHolder]
   - id: code
     title: 総務省
-    path: https://www.soumu.go.jp/denshijiti/code.html
+    url: https://www.soumu.go.jp/denshijiti/code.html
     roles: [rightsHolder]
 
 spatial_coverage: [JP]

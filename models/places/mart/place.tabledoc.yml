@@ -68,7 +68,7 @@ columns:
     title: 都道府県
   - name: postal_code
     title: 郵便番号
-    entity: {type: foreign, name: postal_code}
+    entity: postal_code
   - name: source_datasets
     title: 提供元
     description: 属性を提供したデータセット名。「, 」区切り
@@ -78,26 +78,26 @@ columns:
   - name: prefecture_code
     title: 都道府県コード
     description: 2 桁。都道府県で絞るときはこちらを使います
-    entity: {type: foreign, name: prefecture}
+    entity: prefecture
   - name: local_government_code
     title: 全国地方公共団体コード
     description: 6 桁。施設の位置が入る市区町村（政令市は区）
-    entity: {type: foreign, name: city}
+    entity: city
   - name: building_id
     title: 建物の GERS ID
     description: 施設の位置が入る建物の building_id
   - name: mesh1
     title: 1 次メッシュコード
     description: 施設の位置が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: mesh2
     title: 2 次メッシュコード
     description: 施設の位置が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: mesh3
     title: 3 次メッシュコード
     description: 施設の位置が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: duplicate_of
     title: 重複先の GERS ID
     description: 重複と判定したとき、残す側の行の id

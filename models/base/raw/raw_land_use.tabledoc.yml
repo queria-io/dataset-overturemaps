@@ -11,6 +11,6 @@ topics:
   - Overture Maps
 sources:
   - id: land_use
-    path: https://docs.overturemaps.org/schema/reference/base/land_use/
+    url: https://docs.overturemaps.org/schema/reference/base/land_use/
 primary_key: [id]
-listed: false
+hidden: true

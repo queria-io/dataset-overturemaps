@@ -12,6 +12,6 @@ topics:
   - Overture Maps
 sources:
   - id: infrastructure
-    path: https://docs.overturemaps.org/schema/reference/base/infrastructure/
+    url: https://docs.overturemaps.org/schema/reference/base/infrastructure/
 primary_key: [id]
-listed: false
+hidden: true

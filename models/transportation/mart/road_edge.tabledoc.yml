@@ -59,11 +59,11 @@ columns:
   - name: mesh1
     title: 1 次メッシュコード
     description: 線の中点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: mesh2
     title: 2 次メッシュコード
     description: 線の中点が入る 2 次メッシュ（約 10km 四方）
-    entity: {type: foreign, name: mesh}
+    entity: mesh
   - name: gers_id
     title: 元の区間の GERS ID
     description: 区切る前の区間の ID（raw_segment の id）

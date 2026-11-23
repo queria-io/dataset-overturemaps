@@ -11,6 +11,6 @@ topics:
   - Overture Maps
 sources:
   - id: building
-    path: https://docs.overturemaps.org/schema/reference/buildings/building/
+    url: https://docs.overturemaps.org/schema/reference/buildings/building/
 primary_key: [id]
-listed: false
+hidden: true

@@ -11,5 +11,5 @@ topics:
   - Overture Maps
 sources:
   - id: connector
-    path: https://docs.overturemaps.org/schema/reference/transportation/connector/
-listed: false
+    url: https://docs.overturemaps.org/schema/reference/transportation/connector/
+hidden: true
