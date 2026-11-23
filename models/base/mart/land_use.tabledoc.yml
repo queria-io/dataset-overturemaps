@@ -1,6 +1,4 @@
----
-$schema: https://queria.io/schemas/table/v1.json
-table: base.land_use
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 日本の土地利用
 description: |-
   Overture Maps base テーマの日本の土地利用です。1 行が 1 区画で、住宅地・農地・公園・学校の敷地・墓地などを面で持ちます。
@@ -8,7 +6,7 @@ description: |-
   - 元はほぼ OpenStreetMap で、描かれている範囲は地域によって差が大きいです。市区町村全体の土地利用の割合を出す用途には向きません
   - 市区町村コードは代表点の市区町村の 1 つだけです
   - land_use_id は 2026-09 のリリースで全件振り直されました
-keywords:
+topics:
   - 土地利用
   - 農地
   - 公園
@@ -16,10 +14,9 @@ keywords:
   - 地方公共団体コード
   - メッシュ
   - GIS
-sources:
-  - path: https://docs.overturemaps.org/guides/base/
+sources: [base]
 primary_key: [land_use_id]
-fields:
+columns:
   - name: land_use_id
     title: GERS ID
     description: Overture の GERS ID。2026-09 に全件振り直されました
@@ -56,11 +53,11 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 2桁。代表点が入る市区町村の都道府県
-    semantic: {role: entity, name: prefecture}
+    entity: {type: foreign, name: prefecture}
   - name: local_government_code
     title: 全国地方公共団体コード
     description: 6 桁。代表点が入る市区町村（政令市は区）
-    semantic: {role: entity, name: city}
+    entity: {type: foreign, name: city}
   - name: longitude
     title: 経度
     description: 代表点（区画の上に取った点）
@@ -70,20 +67,18 @@ fields:
   - name: mesh1
     title: 1 次メッシュコード
     description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh2
     title: 2 次メッシュコード
     description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh3
     title: 3 次メッシュコード
     description: 代表点が入る 3 次メッシュ（約 1km 四方）。行はこの順です
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: geometry
     title: ジオメトリ
     description: 区画の POLYGON / MULTIPOLYGON（一部 LINESTRING）
   - name: release
     title: リリース
     description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
-themes: [land_climate]
----

@@ -1,11 +1,11 @@
-$schema: https://queria.io/schemas/dataset/v1.json
+$schema: https://tabledoc.queria.io/schemas/dataset/v1.json
 name: overturemaps
 title: Overture Maps
 description: |-
   Overture Maps Foundation が公開するオープンな地図データのうち、日本の POI・道路網・行政区画・建物・設備・土地利用です。毎月、Overture の最新リリースから取得し直し、市区町村コードとメッシュコードを付けています。
 
   出典：Overture Maps Foundation, overturemaps.org。提供元ごとのライセンスと Foursquare の NOTICE はデータセットの説明にあります。Queria が加工したものです。
-keywords:
+topics:
   - POI
   - 行政区画
   - 建物
@@ -50,42 +50,56 @@ licenses:
     attribution_required: true
 
 sources:
-  - title: Overture Maps places
+  - id: places
+    title: Overture Maps places
     path: https://docs.overturemaps.org/guides/places/
-  - title: Overture Maps transportation
+  - id: transportation
+    title: Overture Maps transportation
     path: https://docs.overturemaps.org/guides/transportation/
-  - title: Overture Maps divisions
+  - id: divisions
+    title: Overture Maps divisions
     path: https://docs.overturemaps.org/guides/divisions/
-  - title: Overture Maps buildings
+  - id: buildings
+    title: Overture Maps buildings
     path: https://docs.overturemaps.org/guides/buildings/
-  - title: Overture Maps base
+  - id: base
+    title: Overture Maps base
     path: https://docs.overturemaps.org/guides/base/
-  - title: 総務省 全国地方公共団体コード
+  - id: code
+    title: 総務省 全国地方公共団体コード
     path: https://www.soumu.go.jp/denshijiti/code.html
 
 contributors:
-  - title: Overture Maps Foundation
+  - id: overturemaps
+    title: Overture Maps Foundation
     path: https://overturemaps.org/
     roles: [rightsHolder]
-  - title: Foursquare Labs, Inc.
+  - id: os-places
+    title: Foursquare Labs, Inc.
     path: https://opensource.foursquare.com/os-places/
     roles: [rightsHolder]
-  - title: OpenStreetMap contributors
+  - id: copyright
+    title: OpenStreetMap contributors
     path: https://www.openstreetmap.org/copyright
     roles: [rightsHolder]
-  - title: Microsoft
+  - id: globalmlbuildingfootprints
+    title: Microsoft
     path: https://github.com/microsoft/GlobalMLBuildingFootprints
     roles: [rightsHolder]
-  - title: Shi et al.（Zenodo）
+  - id: zenodo
+    title: Shi et al.（Zenodo）
     path: https://doi.org/10.5281/zenodo.8174931
     roles: [rightsHolder]
-  - title: geoBoundaries
+  - id: geoboundaries
+    title: geoBoundaries
     path: https://www.geoboundaries.org/
     roles: [rightsHolder]
-  - title: Esri Community Maps contributors
+  - id: communitymaps
+    title: Esri Community Maps contributors
     path: https://communitymaps.arcgis.com/
     roles: [rightsHolder]
-  - title: 総務省
+  - id: code
+    title: 総務省
     path: https://www.soumu.go.jp/denshijiti/code.html
     roles: [rightsHolder]
 
@@ -103,5 +117,3 @@ schemas:
   - name: base
     title: 設備・土地利用
 
-themes: [land_climate, housing_land, transport_tourism, commerce_services]
-cover: 📍

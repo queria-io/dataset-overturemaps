@@ -1,6 +1,4 @@
----
-$schema: https://queria.io/schemas/table/v1.json
-table: places.place
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 日本の POI
 description: |-
   Overture Maps places テーマの日本の施設です。1 行が 1 施設で、名称・カテゴリ・住所・電話番号と、市区町村コード・メッシュコード・建物の ID を持ちます。
@@ -8,16 +6,15 @@ description: |-
   - 件数を数えるときは exclude_reason が NULL の行に絞ってください。重複や閉店した施設の行が残っています
   - 営業状態（operating_status）はほとんどの行で空です
   - source_licenses に Apache-2.0 を含む行には、データセットの説明にある Foursquare の NOTICE が適用されます
-keywords:
+topics:
   - POI
   - 施設
   - 店舗
   - 飲食店
   - GIS
-sources:
-  - path: https://docs.overturemaps.org/guides/places/
+sources: [places]
 primary_key: [id]
-fields:
+columns:
   - name: longitude
     title: 経度
   - name: latitude
@@ -71,7 +68,7 @@ fields:
     title: 都道府県
   - name: postal_code
     title: 郵便番号
-    semantic: {role: entity, name: postal_code}
+    entity: {type: foreign, name: postal_code}
   - name: source_datasets
     title: 提供元
     description: 属性を提供したデータセット名。「, 」区切り
@@ -81,26 +78,26 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 2 桁。都道府県で絞るときはこちらを使います
-    semantic: {role: entity, name: prefecture}
+    entity: {type: foreign, name: prefecture}
   - name: local_government_code
     title: 全国地方公共団体コード
     description: 6 桁。施設の位置が入る市区町村（政令市は区）
-    semantic: {role: entity, name: city}
+    entity: {type: foreign, name: city}
   - name: building_id
     title: 建物の GERS ID
     description: 施設の位置が入る建物の building_id
   - name: mesh1
     title: 1 次メッシュコード
     description: 施設の位置が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh2
     title: 2 次メッシュコード
     description: 施設の位置が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh3
     title: 3 次メッシュコード
     description: 施設の位置が入る JIS X 0410 の 3 次メッシュ（基準地域メッシュ、約 1km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: duplicate_of
     title: 重複先の GERS ID
     description: 重複と判定したとき、残す側の行の id
@@ -110,5 +107,3 @@ fields:
   - name: geometry
     title: ジオメトリ
     description: 施設の位置を表す POINT
-themes: [commerce_services]
----
