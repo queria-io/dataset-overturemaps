@@ -5,6 +5,7 @@ description: |-
   Overture Maps Foundation が公開するオープンな地図データのうち、日本の POI・道路網・行政区画・建物・設備・土地利用です。毎月、Overture の最新リリースから取得し直し、市区町村コードとメッシュコードを付けています。
 
   出典：Overture Maps Foundation, overturemaps.org。提供元ごとのライセンスと Foursquare の NOTICE はデータセットの説明にあります。Queria が加工したものです。
+image: cover.png
 topics:
   - POI
   - 行政区画
