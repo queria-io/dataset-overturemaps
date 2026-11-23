@@ -1,6 +1,4 @@
----
-$schema: https://queria.io/schemas/table/v1.json
-table: transportation.road_edge
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 道路網の辺
 description: |-
   日本の道路網を経路計算に使える形にしたものです。道路を交差点ごとに区切った 1 本が 1 行で、徒歩・自転車・車で通れるかと車の一方通行を持ちます。
@@ -8,7 +6,7 @@ description: |-
   - from_node と to_node が transportation.road_node を指します
   - mesh2 で絞ると周りの道だけを読めます
   - 時間帯や車種の条件付きの規制は反映していません
-keywords:
+topics:
   - 道路
   - 道路網
   - 経路
@@ -16,10 +14,9 @@ keywords:
   - 商圏
   - 一方通行
   - GIS
-sources:
-  - path: https://docs.overturemaps.org/guides/transportation/
+sources: [transportation]
 primary_key: [edge_id]
-fields:
+columns:
   - name: edge_id
     title: 辺 ID
     description: 2 次メッシュの順に振った整数。リリースごとに振り直す
@@ -62,11 +59,11 @@ fields:
   - name: mesh1
     title: 1 次メッシュコード
     description: 線の中点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh2
     title: 2 次メッシュコード
     description: 線の中点が入る 2 次メッシュ（約 10km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: gers_id
     title: 元の区間の GERS ID
     description: 区切る前の区間の ID（raw_segment の id）
@@ -82,5 +79,3 @@ fields:
   - name: release
     title: リリース
     description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
-themes: [transport_tourism]
----

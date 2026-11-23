@@ -1,6 +1,4 @@
----
-$schema: https://queria.io/schemas/table/v1.json
-table: base.infrastructure
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 日本の設備
 description: |-
   Overture Maps base テーマの日本の設備です。1 行が 1 地物で、バス停・信号・横断歩道・駐車場・橋・送電線・ベンチなどを点・線・面で持ちます。
@@ -8,7 +6,7 @@ description: |-
   - 元はほぼ OpenStreetMap で、地域によって網羅の度合いが違います
   - 市区町村コードとメッシュコードは、地物の上に取った代表点から付けています
   - infrastructure_id は 2026-09 のリリースで全件振り直されました
-keywords:
+topics:
   - インフラ
   - 設備
   - バス停
@@ -18,10 +16,9 @@ keywords:
   - 地方公共団体コード
   - メッシュ
   - GIS
-sources:
-  - path: https://docs.overturemaps.org/guides/base/
+sources: [base]
 primary_key: [infrastructure_id]
-fields:
+columns:
   - name: infrastructure_id
     title: GERS ID
     description: Overture の GERS ID。2026-09 に全件振り直されました
@@ -55,11 +52,11 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 2桁。代表点が入る市区町村の都道府県
-    semantic: {role: entity, name: prefecture}
+    entity: {type: foreign, name: prefecture}
   - name: local_government_code
     title: 全国地方公共団体コード
     description: 6 桁。代表点が入る市区町村（政令市は区）
-    semantic: {role: entity, name: city}
+    entity: {type: foreign, name: city}
   - name: longitude
     title: 経度
     description: 代表点（地物の上に取った点。点の地物ではその点）
@@ -69,20 +66,18 @@ fields:
   - name: mesh1
     title: 1 次メッシュコード
     description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh2
     title: 2 次メッシュコード
     description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh3
     title: 3 次メッシュコード
     description: 代表点が入る 3 次メッシュ（約 1km 四方）。行はこの順です
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: geometry
     title: ジオメトリ
     description: POINT / LINESTRING / POLYGON / MULTIPOLYGON
   - name: release
     title: リリース
     description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
-themes: [land_climate]
----

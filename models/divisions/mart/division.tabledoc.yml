@@ -1,6 +1,4 @@
----
-$schema: https://queria.io/schemas/table/v1.json
-table: divisions.division
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 日本の行政区画
 description: |-
   Overture Maps divisions テーマの日本の区画に、地方公共団体コードを付けたものです。1 行が 1 区画で、都道府県・市区町村・政令市の区・町丁・字の代表点を持ちます。
@@ -8,7 +6,7 @@ description: |-
   - 市区町村そのものの行は is_municipality が true です
   - 町丁・字の行には、その区画が属する市区町村のコードが入ります
   - ポリゴンは divisions.division_area にあります
-keywords:
+topics:
   - 行政区画
   - 市区町村
   - 都道府県
@@ -16,10 +14,9 @@ keywords:
   - 地方公共団体コード
   - GERS
   - GIS
-sources:
-  - path: https://docs.overturemaps.org/guides/divisions/
+sources: [divisions]
 primary_key: [division_id]
-fields:
+columns:
   - name: division_id
     title: GERS ID
     description: Overture の GERS ID。リリースをまたいで同じ区画に同じ ID
@@ -41,11 +38,11 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 2桁。prefecture を地方公共団体コードの一覧と照合したもの
-    semantic: {role: entity, name: prefecture}
+    entity: {type: foreign, name: prefecture}
   - name: local_government_code
     title: 全国地方公共団体コード
     description: 6 桁。町丁・字の行は属する市区町村（政令市は区）
-    semantic: {role: entity, name: city}
+    entity: {type: foreign, name: city}
   - name: is_municipality
     title: 市区町村そのものか
     description: 市区町村そのものの行なら true。1 つのコードに 1 行
@@ -67,16 +64,14 @@ fields:
   - name: mesh1
     title: 1 次メッシュコード
     description: 代表点が入る JIS X 0410 の 1 次メッシュ（約 80km 四方）
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: mesh2
     title: 2 次メッシュコード
     description: 代表点が入る JIS X 0410 の 2 次メッシュ（約 10km 四方）。行はこの順に並んでいる
-    semantic: {role: entity, name: mesh}
+    entity: {type: foreign, name: mesh}
   - name: geometry
     title: ジオメトリ
     description: 区画の代表点を表す POINT
   - name: release
     title: リリース
     description: 取り込んだ Overture のリリース名（YYYY-MM-DD.N）
-themes: [land_climate]
----

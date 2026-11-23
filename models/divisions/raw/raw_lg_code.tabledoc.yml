@@ -1,6 +1,3 @@
----
-$schema: https://queria.io/schemas/table/v1.json
-table: divisions.raw_lg_code
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 description: Queria の lg_code（総務省の全国地方公共団体コード）を、取り出したままの形で持つ中間テーブル。divisions.division の照合に使う。
-published: false
----
+listed: false
