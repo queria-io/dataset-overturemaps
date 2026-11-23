@@ -22,30 +22,14 @@ topics:
   - GIS
   - Overture Maps
   - Foursquare
-homepage: https://github.com/queria-io/dataset-overturemaps
 language: ja
 licenses:
-  - id: CDLA-Permissive-2.0
-    url: https://cdla.dev/permissive-2-0/
-    title: Community Data License Agreement – Permissive, Version 2.0
-    commercial_use: true
-    share_alike: false
-    attribution_required: false
-  - id: Apache-2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0
-    title: Apache License 2.0
-    commercial_use: true
-    share_alike: false
-    attribution_required: true
+  - CDLA-Permissive-2.0
+  - Apache-2.0
   - CC0-1.0
   - CC-BY-4.0
   - JP-GOV-STD-2.0
-  - id: ODbL-1.0
-    url: https://opendatacommons.org/licenses/odbl/1-0/
-    title: Open Data Commons Open Database License 1.0
-    commercial_use: true
-    share_alike: true
-    attribution_required: true
+  - ODbL-1.0
 
 sources:
   - id: places
