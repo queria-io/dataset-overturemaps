@@ -30,7 +30,7 @@ candidate as (
         prefecture,
         -- 政令市の区は一覧で「札幌市中央区」と市の名前から書くので、郡でない親の名前を前に付ける
         replace(replace(
-            coalesce(list_filter(hierarchy[1:-2], h -> h.subtype = 'locality' and not regexp_matches(h.name, {{ gun }}))[-1].name, '')
+            coalesce(list_filter(hierarchy[1:-2], lambda h: h.subtype = 'locality' and not regexp_matches(h.name, {{ gun }}))[-1].name, '')
                 || name,
             'ヶ', 'ケ'), 'ヵ', 'カ') as city
     from division
@@ -83,7 +83,7 @@ select
     nearest.lg_code as local_government_code,
     representative.division_id is not null as is_municipality,
     division.parent_division_id,
-    array_to_string(list_transform(division.hierarchy[2:], h -> h.name), ' > ') as hierarchy_names,
+    array_to_string(list_transform(division.hierarchy[2:], lambda h: h.name), ' > ') as hierarchy_names,
     division.population,
     division.wikidata,
     st_x(division.geometry) as longitude,
