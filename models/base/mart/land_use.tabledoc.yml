@@ -23,9 +23,11 @@ columns:
   - name: subtype
     title: 種類の大分類
     description: residential・agriculture・park・education など
+    dimension: categorical
   - name: class
     title: 種類
     description: residential・farmland・park・grass・school など
+    dimension: categorical
   - name: name
     title: 名称
     description: 主たる名称。名前の付いた地物だけ（公園名・学校名など）

@@ -31,6 +31,7 @@ columns:
   - name: basic_category
     title: 基本カテゴリ
     description: 大まかなカテゴリ（restaurant・cafe・hospital など）
+    dimension: categorical
   - name: taxonomy_primary
     title: カテゴリ
     description: Overture の分類体系での主カテゴリ。basic_category より細かい
@@ -58,6 +59,7 @@ columns:
   - name: operating_status
     title: 営業状態
     description: open・permanently_closed など。ほとんどの行で NULL
+    dimension: categorical
   - name: brand_name
     title: ブランド名
   - name: brand_wikidata

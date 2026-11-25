@@ -23,9 +23,11 @@ columns:
   - name: subtype
     title: 用途の大分類
     description: residential・commercial など。多くの行で NULL
+    dimension: categorical
   - name: class
     title: 用途
     description: house・apartments・school など。多くの行で NULL
+    dimension: categorical
   - name: name
     title: 名称
     description: 主たる名称。名前の付いた建物だけ
