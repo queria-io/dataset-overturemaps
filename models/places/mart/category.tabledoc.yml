@@ -21,6 +21,7 @@ columns:
   - name: basic_category
     title: Overture の基本分類
     description: place の basic_category と同じ値
+    dimension: categorical
   - name: taxonomy_primary
     title: Overture の詳細分類
     description: NULL の行は basic_category の既定の行

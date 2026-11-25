@@ -23,9 +23,11 @@ columns:
   - name: subtype
     title: 区画の種類
     description: country・region・county・locality・macrohood・neighborhood・microhood
+    dimension: categorical
   - name: class
     title: 区画の分類
     description: locality の city・town・village など
+    dimension: categorical
   - name: name
     title: 名称
     description: Overture の主たる名称。county はローマ字

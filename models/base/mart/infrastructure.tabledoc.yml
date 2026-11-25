@@ -25,9 +25,11 @@ columns:
   - name: subtype
     title: 種類の大分類
     description: transit・pedestrian・barrier・bridge・power など
+    dimension: categorical
   - name: class
     title: 種類
     description: bus_stop・traffic_signals・crossing・parking など
+    dimension: categorical
   - name: name
     title: 名称
     description: 主たる名称。名前の付いた地物だけ（バス停名・橋の名前など）

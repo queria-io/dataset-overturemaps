@@ -32,9 +32,11 @@ columns:
   - name: class
     title: 道路の種類
     description: motorway・primary・residential・footway など
+    dimension: categorical
   - name: subclass
     title: 道路の細分類
     description: sidewalk・crosswalk・link など
+    dimension: categorical
   - name: walk
     title: 徒歩で通れる
     description: 徒歩で通れるなら true
