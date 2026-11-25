@@ -6,11 +6,11 @@ select
     -- 言語別の名前は names.rules の variant = 'language' に入る。names.common は
     -- 2026-09 のリリースでは日本の全行で NULL だが、スキーマ上は残っているので後ろで拾う
     coalesce(
-        list_filter(names.rules, r -> r.variant = 'language' and r.language = 'ja')[1].value,
+        list_filter(names.rules, lambda r: r.variant = 'language' and r.language = 'ja')[1].value,
         names.common['ja']
     ) as name_ja,
     coalesce(
-        list_filter(names.rules, r -> r.variant = 'language' and r.language = 'en')[1].value,
+        list_filter(names.rules, lambda r: r.variant = 'language' and r.language = 'en')[1].value,
         names.common['en']
     ) as name_en,
     basic_category,
@@ -28,9 +28,9 @@ select
     -- 重複の判定にだけ使う。1 つの番号の中にも空白がある（+81 3-…）ので、つないだ phones からは切り出せない
     phones[1] as first_phone,
     array_to_string(websites, ' ') as websites,
-    array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.dataset))), ', ')
+    array_to_string(list_sort(list_distinct(list_transform(sources, lambda s: s.dataset))), ', ')
         as source_datasets,
-    array_to_string(list_sort(list_distinct(list_transform(sources, s -> s.license))), ', ')
+    array_to_string(list_sort(list_distinct(list_transform(sources, lambda s: s.license))), ', ')
         as source_licenses,
     st_y(geometry) as latitude,
     st_x(geometry) as longitude,

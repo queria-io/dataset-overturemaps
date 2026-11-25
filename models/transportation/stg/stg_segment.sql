@@ -9,10 +9,10 @@ select
     release,
     coalesce(access_restrictions, []) as rules,
     list_distinct(flatten(list_transform(
-        list_filter(coalesce(road_flags, []), f -> f.between is null), f -> f.values
+        list_filter(coalesce(road_flags, []), lambda f: f.between is null), lambda f: f.values
     ))) as flags,
     list_filter(coalesce(speed_limits, []),
-        s -> s.between is null and s.when is null and s.max_speed is not null
+        lambda s: s.between is null and s.when is null and s.max_speed is not null
     )[1].max_speed as max_speed,
     connectors
 from {{ ref('raw_segment') }}
